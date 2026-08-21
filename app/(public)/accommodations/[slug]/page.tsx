@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FavoriteButton } from "@/components/favorites/FavoriteButton";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
 
 export default async function AccommodationDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -30,6 +32,7 @@ export default async function AccommodationDetailPage({ params }: { params: Prom
         {acc.priceRange ? <Badge>{acc.priceRange}</Badge> : null}
         {acc.maxGuests ? <Badge variant="secondary">Up to {acc.maxGuests} guests</Badge> : null}
         {acc.avgRating ? <Badge variant="outline">★ {String(acc.avgRating)}</Badge> : <Badge variant="outline">No ratings</Badge>}
+        <FavoriteButton accommodationId={acc.id} />
       </div>
 
       <p className="mt-6 max-w-3xl text-sm leading-6">{acc.description}</p>
@@ -115,8 +118,11 @@ export default async function AccommodationDetailPage({ params }: { params: Prom
 
       <div className="mt-8">
         <h2 className="text-lg font-semibold">Reviews</h2>
+        <div className="mt-4">
+          <ReviewForm accommodationId={acc.id} />
+        </div>
         {reviews.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No reviews yet.</p>
+          <p className="mt-4 text-sm text-muted-foreground">No reviews yet.</p>
         ) : (
           <div className="mt-4 space-y-3">
             {reviews.map((r) => (
