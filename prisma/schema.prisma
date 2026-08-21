@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String                  @id @default(cuid())
+  email         String                  @unique
+  name          String?
+  image         String?
+  role          Role                    @default(USER)
+  createdAt     DateTime                @default(now())
+  reviews       Review[]
+  favoriteBeaches FavoriteBeach[]
+  favoriteAccommodations FavoriteAccommodation[]
+  blogPosts     BlogPost[]              @relation("BlogAuthor")
+}
+
+model Beach {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  slug          String        @unique
+  location      String
+  description   String        @db.Text
+  entranceFee   Decimal?      @db.Decimal(10, 2)
+  openingHours  String?
+  contactInfo   String?
+  latitude      Decimal?      @db.Decimal(10, 7)
+  longitude     Decimal?      @db.Decimal(10, 7)
+  googleMapsUrl String?
+  avgRating     Decimal?      @db.Decimal(2, 1)
+  reviewCount   Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  images        BeachImage[]
+  amenities     BeachAmenity[]
+  accommodations Accommodation[]
+  reviews       Review[]
+  favoritedBy   FavoriteBeach[]
+
+  @@index([location])
+  @@index([slug])
+}
+
+model BeachImage {
+  id        String @id @default(cuid())
+  beachId   String
+  beach     Beach  @relation(fields: [beachId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  sortOrder Int    @default(0)
+
+  @@index([beachId])
+}
+
+model Amenity {
+  id     String @id @default(cuid())
+  name   String @unique
+  icon   String?
+  beaches BeachAmenity[]
+  accommodations AccommodationAmenity[]
+}
+
+model BeachAmenity {
+  id        String  @id @default(cuid())
+  beachId   String
+  amenityId String
+  beach     Beach   @relation(fields: [beachId], references: [id], onDelete: Cascade)
+  amenity   Amenity @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@unique([beachId, amenityId])
+}
+
+model Accommodation {
+  id            String        @id @default(cuid())
+  beachId       String
+  beach         Beach         @relation(fields: [beachId], references: [id], onDelete: Cascade)
+  name          String
+  slug          String        @unique
+  description   String        @db.Text
+  priceRange    String?
+  facebookUrl   String
+  contactInfo   String?
+  checkInTime   String?
+  checkOutTime  String?
+  maxGuests     Int?
+  avgRating     Decimal?      @db.Decimal(2, 1)
+  reviewCount   Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  images        AccommodationImage[]
+  amenities     AccommodationAmenity[]
+  roomTypes     RoomType[]
+  reviews       Review[]
+  favoritedBy   FavoriteAccommodation[]
+
+  @@index([beachId])
+  @@index([slug])
+}
+
+model AccommodationImage {
+  id              String        @id @default(cuid())
+  accommodationId String
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  url             String
+  alt             String?
+  sortOrder       Int           @default(0)
+
+  @@index([accommodationId])
+}
+
+model AccommodationAmenity {
+  id              String        @id @default(cuid())
+  accommodationId String
+  amenityId       String
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  amenity         Amenity       @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@unique([accommodationId, amenityId])
+}
+
+model RoomType {
+  id              String        @id @default(cuid())
+  accommodationId String
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?       @db.Text
+  price           Decimal       @db.Decimal(10, 2)
+  maxGuests       Int?
+  amenities       String?       @db.Text
+  images          RoomTypeImage[]
+
+  @@index([accommodationId])
+}
+
+model RoomTypeImage {
+  id         String   @id @default(cuid())
+  roomTypeId String
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+  url        String
+  alt        String?
+  sortOrder  Int      @default(0)
+
+  @@index([roomTypeId])
+}
+
+model Review {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  beachId         String?
+  beach           Beach?         @relation(fields: [beachId], references: [id], onDelete: Cascade)
+  accommodationId String?
+  accommodation   Accommodation? @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  rating          Int
+  comment         String         @db.Text
+  moderatedBy     String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([beachId, createdAt])
+  @@index([accommodationId, createdAt])
+  @@index([userId])
+  // XOR constraint enforced in Zod + DB check — add via @@check when Prisma supports it or via migration SQL
+}
+
+model FavoriteBeach {
+  userId    String
+  beachId   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  beach     Beach    @relation(fields: [beachId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, beachId])
+}
+
+model FavoriteAccommodation {
+  userId          String
+  accommodationId String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accommodation   Accommodation @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+
+  @@id([userId, accommodationId])
+}
+
+model BlogCategory {
+  id    String     @id @default(cuid())
+  name  String     @unique
+  slug  String     @unique
+  posts BlogPost[]
+
+  @@index([slug])
+}
+
+model BlogPost {
+  id           String        @id @default(cuid())
+  categoryId   String?
+  category     BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  authorId     String?
+  author       User?         @relation("BlogAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  title        String
+  slug         String        @unique
+  content      String        @db.Text
+  featuredImage String?
+  published    Boolean       @default(false)
+  publishedAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  images       BlogImage[]
+
+  @@index([slug])
+  @@index([published])
+}
+
+model BlogImage {
+  id         String   @id @default(cuid())
+  blogPostId String
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  url        String
+  alt        String?
+  sortOrder  Int      @default(0)
+
+  @@index([blogPostId])
+}
