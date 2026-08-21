@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AccommodationDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const session = await auth();
   const acc = await prisma.accommodation.findUnique({
     where: { slug },
     include: { beach: true, roomTypes: true, images: true, amenities: { include: { amenity: true } } },
@@ -94,15 +96,21 @@ export default async function AccommodationDetailPage({ params }: { params: Prom
       </div>
 
       <div className="mt-8 flex gap-3">
-        <a
-          href={acc.facebookUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground"
-        >
-          Book Now → Facebook
-        </a>
-        <span className="inline-flex h-9 items-center text-xs text-muted-foreground">Login required (Phase 4 will gate this)</span>
+        {session ? (
+          <a
+            href={acc.facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground"
+          >
+            Book Now → Facebook
+          </a>
+        ) : (
+          <Link href="/api/auth/signin" className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">
+            Login to Book
+          </Link>
+        )}
+        <span className="inline-flex h-9 items-center text-xs text-muted-foreground">{session ? "Opens Facebook in new tab" : "Google login required"}</span>
       </div>
 
       <div className="mt-8">
