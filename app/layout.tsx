@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Discover Samal Island beaches, accommodations, room types, maps, and travel guides. Browse freely, save favorites with Google.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
