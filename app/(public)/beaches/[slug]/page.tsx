@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FavoriteButton } from "@/components/favorites/FavoriteButton";
+import { ReviewForm } from "@/components/reviews/ReviewForm";
 
 export default async function BeachDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -30,6 +32,7 @@ export default async function BeachDetailPage({ params }: { params: Promise<{ sl
             📍 View on Google Maps
           </a>
         ) : null}
+        <FavoriteButton beachId={beach.id} />
       </div>
 
       {beach.latitude && beach.longitude ? (
@@ -83,8 +86,11 @@ export default async function BeachDetailPage({ params }: { params: Promise<{ sl
 
       <div className="mt-8">
         <h2 className="text-lg font-semibold">Reviews</h2>
+        <div className="mt-4">
+          <ReviewForm beachId={beach.id} />
+        </div>
         {reviews.length === 0 ? (
-          <p className="mt-2 text-sm text-muted-foreground">No reviews yet. Login to write a review (Phase 5).</p>
+          <p className="mt-4 text-sm text-muted-foreground">No reviews yet.</p>
         ) : (
           <div className="mt-4 space-y-3">
             {reviews.map((r) => (
