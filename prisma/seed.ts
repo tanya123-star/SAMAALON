@@ -66,23 +66,61 @@ async function main() {
     },
   });
 
-  // Sample blog posts (Phase 2 seed requirement: 5 blogs per docs/07-roadmap.md:15)
-  for (let i = 1; i <= 5; i++) {
+  // Delete old generic slugs (approved: keep only 5 topics)
+  await prisma.blogPost.deleteMany({
+    where: { slug: { in: ["samal-travel-guide-1", "samal-travel-guide-2", "samal-travel-guide-3", "samal-travel-guide-4", "samal-travel-guide-5"] } },
+  });
+
+  // Approved Samaalon blog topics
+  const blogTopics = [
+    {
+      title: "10 Best Beaches in Samal",
+      slug: "10-best-beaches-in-samal",
+      content:
+        "Discover the 10 best beaches in Samal Island — from Paradise Beach to Canibad, with entrance fees, amenities, and maps.",
+    },
+    {
+      title: "Things to Do in Samal Island",
+      slug: "things-to-do-in-samal-island",
+      content:
+        "Top things to do in Samal: snorkeling, island hopping, hiking, and local food — with beach and accommodation links.",
+    },
+    {
+      title: "How to Get to Samal Island",
+      slug: "how-to-get-to-samal-island",
+      content:
+        "How to get to Samal Island from Davao City — ferry schedules, routes, and travel tips for first-time visitors.",
+    },
+    {
+      title: "Best Accommodations in Samal",
+      slug: "best-accommodations-in-samal",
+      content:
+        "Best accommodations in Samal by beach — price ranges, room types, amenities, and Facebook booking links.",
+    },
+    {
+      title: "Samal Island Travel Guide",
+      slug: "samal-island-travel-guide",
+      content:
+        "Complete Samal Island travel guide — beaches, stays, maps, and tips for planning your trip.",
+    },
+  ];
+
+  for (const topic of blogTopics) {
     await prisma.blogPost.upsert({
-      where: { slug: `samal-travel-guide-${i}` },
-      update: {},
+      where: { slug: topic.slug },
+      update: { title: topic.title, content: topic.content },
       create: {
-        title: `Samal Travel Guide ${i}`,
-        slug: `samal-travel-guide-${i}`,
-        content: `Content for travel guide ${i} — discover Samal Island beaches and accommodations.`,
-        categoryId: i % 2 === 0 ? travelCat.id : beachCat.id,
+        title: topic.title,
+        slug: topic.slug,
+        content: topic.content,
+        categoryId: topic.slug.includes("beach") ? beachCat.id : travelCat.id,
         published: true,
         publishedAt: new Date(),
       },
     });
   }
 
-  console.log("Seed done: 2 beaches, 1 accommodation, 5 blogs");
+  console.log("Seed done: 2 beaches, 1 accommodation, 5 blogs (approved topics)");
 }
 
 main()
