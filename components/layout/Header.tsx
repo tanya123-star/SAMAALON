@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { auth, signOut } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { HeaderMobileMenu } from "./HeaderMobileMenu";
+import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 
 const navLinks = [
   { href: "/", label: "HOME" },
@@ -54,17 +55,9 @@ export async function Header() {
                   ADMIN
                 </Link>
               ) : null}
-              <form
-                action={async () => {
-                  "use server";
-                  await signOut();
-                }}
-                className="flex-shrink-0"
-              >
-                <button type="submit" className="whitespace-nowrap text-xs font-semibold uppercase tracking-widest text-[#5A6B68] hover:text-[#1C2A28] transition-colors">
-                  LOGOUT
-                </button>
-              </form>
+              <div className="flex-shrink-0">
+                <LogoutConfirmDialog />
+              </div>
             </>
           ) : (
             <Link

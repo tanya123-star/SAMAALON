@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
 
 type Props = {
   isAuthed: boolean;
@@ -83,26 +84,12 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
                       ADMIN
                     </Link>
                   ) : null}
-                  <form
-                    action={async () => {
-                      const res = await fetch("/api/auth/signout", { method: "POST" });
-                      if (res.ok) window.location.href = "/";
-                    }}
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      fetch("/api/auth/signout", { method: "POST" }).then(() => {
-                        setOpen(false);
-                        window.location.href = "/";
-                      });
-                    }}
-                  >
-                    <button
-                      type="submit"
-                      className="w-full rounded-md px-3 py-3 text-left text-sm font-semibold uppercase tracking-widest text-[#5A6B68] hover:bg-[#1C2A28]/5 hover:text-[#1C2A28]"
-                    >
-                      LOGOUT
-                    </button>
-                  </form>
+                  <div className="w-full">
+                    <LogoutConfirmDialog
+                      triggerClassName="w-full rounded-md px-3 py-3 text-left text-sm font-semibold uppercase tracking-widest text-[#5A6B68] hover:bg-[#1C2A28]/5 hover:text-[#1C2A28]"
+                      buttonLabel="LOGOUT"
+                    />
+                  </div>
                 </>
               ) : (
                 <Link
