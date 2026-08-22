@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
@@ -16,6 +15,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async signIn({ user }) {
       // auto-create User on first sign-in, promote to ADMIN if email matches ADMIN_EMAIL
+      // dynamic import to keep middleware (edge) from loading prisma/node:util/types
+      const { prisma } = await import("@/lib/prisma");
       if (user.email) {
         const existing = await prisma.user.findUnique({ where: { email: user.email } });
         if (!existing) {
@@ -35,6 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     async jwt({ token, user }) {
       if (user?.email) {
+        const { prisma } = await import("@/lib/prisma");
         const dbUser = await prisma.user.findUnique({ where: { email: user.email } });
         if (dbUser) {
           token.role = dbUser.role;

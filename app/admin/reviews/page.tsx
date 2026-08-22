@@ -1,8 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 
 async function updateReviewStatus(formData: FormData) {
   "use server";
+  const session = await auth();
+  const moderatedBy = (session?.user as unknown as { id?: string })?.id;
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !status) return;
@@ -11,7 +14,7 @@ async function updateReviewStatus(formData: FormData) {
   if (!review) return;
 
   await prisma.$transaction(async (tx) => {
-    await tx.review.update({ where: { id }, data: { status: status as "PENDING" | "APPROVED" | "REJECTED" } });
+    await tx.review.update({ where: { id }, data: { status: status as "PENDING" | "APPROVED" | "REJECTED", moderatedBy: moderatedBy ?? null as never } });
 
     // Recalculate average ratings for approved reviews only
     if (review.beachId) {
@@ -39,6 +42,10 @@ async function updateReviewStatus(formData: FormData) {
   });
 
   revalidatePath("/admin/reviews");
+  if (review.beachId) revalidatePath(`/beaches/${review.beachId}`);
+  if (review.accommodationId) revalidatePath(`/accommodations/${review.accommodationId}`);
+  revalidatePath("/beaches");
+  revalidatePath("/");
 }
 
 async function deleteReview(formData: FormData) {
@@ -73,10 +80,17 @@ async function deleteReview(formData: FormData) {
     }
   });
   revalidatePath("/admin/reviews");
+  if (review.beachId) revalidatePath(`/beaches/${review.beachId}`);
+  if (review.accommodationId) revalidatePath(`/accommodations/${review.accommodationId}`);
+  revalidatePath("/beaches");
+  revalidatePath("/");
 }
 
-export default async function AdminReviewsPage() {
+export default async function AdminReviewsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const { status } = await searchParams;
+  const where = status && ["PENDING", "APPROVED", "REJECTED"].includes(status) ? { status: status as "PENDING" | "APPROVED" | "REJECTED" } : {};
   const reviews = await prisma.review.findMany({
+    where,
     include: { user: true, beach: true, accommodation: true },
     orderBy: { createdAt: "desc" },
     take: 50,
@@ -87,6 +101,20 @@ export default async function AdminReviewsPage() {
       <div>
         <h1 className="text-2xl font-bold font-serif text-[#1C2A28]">Review Moderation Queue</h1>
         <p className="text-xs text-[#5A6B68]">Approve pending reviews to publish them on the public site or reject/delete spam.</p>
+        <div className="mt-3 flex gap-2 text-xs">
+          <a href="/admin/reviews" className={`rounded-full border px-3 py-1 ${!status ? "bg-[#1C2A28] text-white" : "hover:bg-muted"}`}>
+            All
+          </a>
+          <a href="/admin/reviews?status=PENDING" className={`rounded-full border px-3 py-1 ${status === "PENDING" ? "bg-amber-500 text-white" : "hover:bg-muted"}`}>
+            Pending
+          </a>
+          <a href="/admin/reviews?status=APPROVED" className={`rounded-full border px-3 py-1 ${status === "APPROVED" ? "bg-emerald-600 text-white" : "hover:bg-muted"}`}>
+            Approved
+          </a>
+          <a href="/admin/reviews?status=REJECTED" className={`rounded-full border px-3 py-1 ${status === "REJECTED" ? "bg-rose-600 text-white" : "hover:bg-muted"}`}>
+            Rejected
+          </a>
+        </div>
       </div>
 
       <div className="space-y-4">
