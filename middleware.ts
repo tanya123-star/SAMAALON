@@ -7,7 +7,7 @@ export default auth((req) => {
   const role = (req.auth?.user as unknown as { role?: string })?.role;
 
   if (isAdminRoute && !isLoggedIn) {
-    return Response.redirect(new URL("/api/auth/signin", nextUrl));
+    return Response.redirect(new URL(`/login?callbackUrl=${encodeURIComponent(nextUrl.pathname + nextUrl.search)}`, nextUrl));
   }
   if (isAdminRoute && role !== "ADMIN") {
     return new Response("Forbidden: Admin only", { status: 403 });

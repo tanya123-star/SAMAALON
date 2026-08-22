@@ -106,7 +106,7 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
                 </>
               ) : (
                 <Link
-                  href="/api/auth/signin"
+                  href="/login"
                   onClick={() => setOpen(false)}
                   className="mt-2 inline-flex w-full justify-center rounded-full bg-[#1C2A28] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-white hover:bg-[#2D6A4F]"
                 >

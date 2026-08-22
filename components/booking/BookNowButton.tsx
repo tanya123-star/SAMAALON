@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 
-export async function BookNowButton({ facebookUrl, accommodationName }: { facebookUrl: string; accommodationName: string }) {
+export async function BookNowButton({ facebookUrl, accommodationName, slug }: { facebookUrl: string; accommodationName: string; slug?: string }) {
   const session = await auth();
   if (!session) {
+    const callbackUrl = slug ? `/accommodations/${slug}` : "/";
     return (
-      <Link href="/api/auth/signin" className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">
-        Book Now
+      <Link href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`} className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">
+        Login to Book {accommodationName}
       </Link>
     );
   }

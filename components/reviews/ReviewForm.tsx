@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function ReviewForm({
   beachId,
@@ -12,6 +13,8 @@ export function ReviewForm({
   accommodationId?: string;
   onCreated?: () => void;
 }) {
+  const pathname = usePathname();
+  const loginHref = `/login?callbackUrl=${encodeURIComponent(pathname ?? "/")}`;
   const [session, setSession] = useState<"loading" | "authenticated" | "unauthenticated">("loading");
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
@@ -71,7 +74,7 @@ export function ReviewForm({
           </p>
         </div>
         <Link
-          href="/api/auth/signin"
+          href={loginHref}
           className="rounded-full bg-[#1C2A28] px-5 py-2.5 text-xs font-bold text-white whitespace-nowrap hover:bg-[#2D6A4F] transition-all"
         >
           Sign in with Google →
