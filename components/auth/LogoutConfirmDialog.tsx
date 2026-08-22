@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
+import { X } from "lucide-react";
 
 type Props = {
   triggerClassName?: string;
@@ -60,7 +61,15 @@ export function LogoutConfirmDialog({ triggerClassName, buttonLabel = "LOGOUT" }
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-sm rounded-2xl bg-white border border-[#1C2A28]/10 p-6 shadow-xl"
           >
-            <h2 id="logout-title" className="font-serif text-lg font-bold text-[#1C2A28]">
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={() => setOpen(false)}
+              className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-[#5A6B68] hover:bg-[#1C2A28]/5 hover:text-[#1C2A28] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2D6A4F]"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <h2 id="logout-title" className="font-serif text-lg font-bold text-[#1C2A28] pr-8">
               Log out?
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[#5A6B68]">
