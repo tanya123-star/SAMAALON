@@ -42,7 +42,7 @@ export default async function HomePage() {
             href="/beaches"
             className="mt-4 md:mt-0 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#2D6A4F] hover:text-[#1C2A28] transition-colors"
           >
-            View All 10 Beaches →
+            View All →
           </Link>
         </div>
 
