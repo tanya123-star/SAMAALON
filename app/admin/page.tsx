@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 export default async function AdminPage() {
   const session = await auth();
   const role = (session?.user as unknown as { role?: string })?.role;
-  if (!session) redirect("/api/auth/signin");
+  if (!session) redirect("/login?callbackUrl=%2Fadmin");
   if (role !== "ADMIN") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center">
