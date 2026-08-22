@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default async function FavoritesPage() {
   const session = await auth();
-  if (!session?.user) redirect("/api/auth/signin");
+  if (!session?.user) redirect("/login?callbackUrl=%2Ffavorites");
   const userId = (session.user as unknown as { id: string }).id;
 
   const [beaches, accommodations] = await Promise.all([

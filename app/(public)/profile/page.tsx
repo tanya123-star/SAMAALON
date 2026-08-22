@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default async function ProfilePage() {
   const session = await auth();
-  if (!session?.user) redirect("/api/auth/signin");
+  if (!session?.user) redirect("/login?callbackUrl=%2Fprofile");
 
   const user = session.user as unknown as { name?: string; email?: string; image?: string; role?: string; id?: string };
 

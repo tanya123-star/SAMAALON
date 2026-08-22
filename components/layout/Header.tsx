@@ -68,7 +68,7 @@ export async function Header() {
             </>
           ) : (
             <Link
-              href="/api/auth/signin"
+              href="/login"
               className="flex-shrink-0 whitespace-nowrap rounded-full bg-[#1C2A28] px-5 py-2 text-xs font-semibold uppercase tracking-widest text-white transition-all hover:bg-[#2D6A4F] hover:shadow-md"
             >
               LOGIN

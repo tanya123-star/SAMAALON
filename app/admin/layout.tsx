@@ -5,7 +5,7 @@ import Link from "next/link";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   const role = (session?.user as unknown as { role?: string })?.role;
-  if (!session) redirect("/api/auth/signin");
+  if (!session) redirect("/login?callbackUrl=%2Fadmin");
   if (role !== "ADMIN") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">

@@ -121,7 +121,7 @@ export default async function AccommodationDetailPage({ params }: { params: Prom
             </p>
 
             <div className="space-y-3">
-              <BookNowButton facebookUrl={acc.facebookUrl} accommodationName={acc.name} />
+              <BookNowButton facebookUrl={acc.facebookUrl} accommodationName={acc.name} slug={acc.slug} />
             </div>
 
             <div className="pt-4 border-t border-[#1C2A28]/10 space-y-3 text-xs text-[#5A6B68]">
