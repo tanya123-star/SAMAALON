@@ -59,7 +59,7 @@ export function LogoutConfirmDialog({ triggerClassName, buttonLabel = "LOGOUT" }
             aria-modal="true"
             aria-labelledby="logout-title"
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-sm rounded-2xl bg-white border border-[#1C2A28]/10 p-6 shadow-xl"
+            className="relative w-full max-w-md rounded-2xl bg-white border border-[#1C2A28]/10 p-6 shadow-xl"
           >
             <button
               type="button"
@@ -72,7 +72,7 @@ export function LogoutConfirmDialog({ triggerClassName, buttonLabel = "LOGOUT" }
             <h2 id="logout-title" className="font-serif text-lg font-bold text-[#1C2A28] pr-8">
               Log out?
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#5A6B68]">
+            <p className="mt-2 text-xs leading-relaxed tracking-wide text-[#5A6B68] break-words whitespace-normal">
               Are you sure you want to log out of your SAMAALON account?
             </p>
             <div className="mt-6 flex gap-3">
