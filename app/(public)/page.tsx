@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { ParallaxHero } from "@/components/scrolling/ParallaxHero";
 
 export default async function HomePage() {
   const [featuredBeaches, popularAccommodations, latestPosts] = await Promise.all([
@@ -25,77 +26,10 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FAF8F5]">
-      {/* 1. Parallax Storytelling Hero */}
-      <section className="relative h-[85vh] min-h-[600px] w-full flex items-center justify-center overflow-hidden">
-        {/* Background Image with Parallax Scale Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85"
-            alt="Samal Island Coastline"
-            className="w-full h-full object-cover scale-105 transition-transform duration-1000 ease-out"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1C2A28]/60 via-[#1C2A28]/30 to-[#FAF8F5]" />
-        </div>
+      {/* 1. Parallax Interactive Hero */}
+      <ParallaxHero />
 
-        {/* Hero Content */}
-        <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-[#E07A5F] bg-[#1C2A28]/40 backdrop-blur-md px-4 py-1.5 rounded-full inline-block mb-6 border border-white/10">
-            Island Garden City of Samal
-          </span>
-          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[1.15]">
-            Discover the Unspoiled Havens of Samal
-          </h1>
-          <p className="mt-6 text-sm sm:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed font-light">
-            Explore white sand coves, hidden cliffside beaches, and authentic resorts across Davao's premier tropical island sanctuary.
-          </p>
 
-          {/* Minimalist Search & CTA Bar */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-xl mx-auto">
-            <Link
-              href="/beaches"
-              className="w-full sm:w-auto rounded-full bg-[#2D6A4F] px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:bg-[#1C2A28] hover:shadow-xl shadow-lg"
-            >
-              Explore Beaches & Coves
-            </Link>
-            <Link
-              href="/about"
-              className="w-full sm:w-auto rounded-full bg-white/20 backdrop-blur-md border border-white/30 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all hover:bg-white hover:text-[#1C2A28]"
-            >
-              Ferry & Travel Info
-            </Link>
-          </div>
-        </div>
-
-        {/* Floating Scroll Indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/60">
-          <span className="text-[10px] uppercase tracking-widest">Scroll to explore</span>
-          <div className="w-4 h-7 rounded-full border border-white/30 flex items-start justify-center p-1">
-            <div className="w-1 h-2 bg-white/80 rounded-full animate-bounce" />
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Interactive Scroll Counter Stats */}
-      <section className="border-y border-[#1C2A28]/10 bg-white py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2A28]">30+</div>
-            <div className="text-xs uppercase tracking-widest text-[#5A6B68] mt-1">Pristine Coves & Beaches</div>
-          </div>
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2A28]">50+</div>
-            <div className="text-xs uppercase tracking-widest text-[#5A6B68] mt-1">Authentic Accommodations</div>
-          </div>
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2A28]">100%</div>
-            <div className="text-xs uppercase tracking-widest text-[#5A6B68] mt-1">Verified Facebook Redirects</div>
-          </div>
-          <div>
-            <div className="font-serif text-3xl sm:text-4xl font-bold text-[#1C2A28]">4.8 ★</div>
-            <div className="text-xs uppercase tracking-widest text-[#5A6B68] mt-1">Average Visitor Rating</div>
-          </div>
-        </div>
-      </section>
 
       {/* 3. Featured Beaches Section */}
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-8 py-20">
