@@ -6,13 +6,13 @@ export async function BookNowButton({ facebookUrl, accommodationName }: { facebo
   if (!session) {
     return (
       <Link href="/api/auth/signin" className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">
-        Login to Book {accommodationName}
+        Book Now
       </Link>
     );
   }
   return (
     <a href={facebookUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground">
-      Book Now → Facebook
+      Book Now
     </a>
   );
 }
