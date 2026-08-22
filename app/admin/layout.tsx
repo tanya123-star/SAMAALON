@@ -34,9 +34,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
           <Link
             href="/"
-            className="flex w-full items-center gap-2 rounded-lg bg-white/10 px-4 py-3 text-[16px] font-bold uppercase tracking-wider text-white hover:bg-white/15 transition-colors"
+            className="flex w-full items-center gap-2 rounded-lg bg-white/10 px-3 py-2.5 text-sm font-bold uppercase tracking-wider text-white hover:bg-white/15 transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 flex-shrink-0" />
+            <ArrowLeft className="h-4 w-4 flex-shrink-0" />
             Back to Main Site
           </Link>
 
@@ -78,8 +78,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Link href="/admin/reviews" className="hover:underline">Reviews</Link>
             </nav>
           </div>
-          <Link href="/" className="flex items-center gap-2 border-t border-white/10 bg-white/5 px-4 py-3 text-[16px] font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors">
-            <ArrowLeft className="h-5 w-5 flex-shrink-0" />
+          <Link href="/" className="flex items-center gap-2 border-t border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-white hover:bg-white/10 transition-colors">
+            <ArrowLeft className="h-4 w-4 flex-shrink-0" />
             Back to Main Site
           </Link>
         </header>
