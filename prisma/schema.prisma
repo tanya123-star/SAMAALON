@@ -152,19 +152,26 @@ model RoomTypeImage {
   @@index([roomTypeId])
 }
 
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model Review {
-  id              String         @id @default(cuid())
+  id              String           @id @default(cuid())
   userId          String
-  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   beachId         String?
-  beach           Beach?         @relation(fields: [beachId], references: [id], onDelete: Cascade)
+  beach           Beach?           @relation(fields: [beachId], references: [id], onDelete: Cascade)
   accommodationId String?
-  accommodation   Accommodation? @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  accommodation   Accommodation?   @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
   rating          Int
-  comment         String         @db.Text
+  comment         String           @db.Text
+  status          ModerationStatus @default(PENDING)
   moderatedBy     String?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   @@index([beachId, createdAt])
   @@index([accommodationId, createdAt])
