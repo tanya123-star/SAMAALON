@@ -22,6 +22,9 @@
 
 # misc
 .DS_Store
+
+# local uploads (dev only — ephemeral on Vercel/serverless)
+/public/uploads/*
 *.pem
 
 # debug

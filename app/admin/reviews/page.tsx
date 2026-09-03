@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
+import { searchParamsSchema } from "@/lib/validations/search";
+import { Button } from "@/components/ui/button";
+import { AdminSearchAutocomplete } from "@/components/admin/AdminSearchAutocomplete";
 
 async function updateReviewStatus(formData: FormData) {
   "use server";
@@ -86,11 +89,29 @@ async function deleteReview(formData: FormData) {
   revalidatePath("/");
 }
 
-export default async function AdminReviewsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const { status } = await searchParams;
-  const where = status && ["PENDING", "APPROVED", "REJECTED"].includes(status) ? { status: status as "PENDING" | "APPROVED" | "REJECTED" } : {};
+export default async function AdminReviewsPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
+  const { status, q: rawQ } = await searchParams;
+  const parsed = searchParamsSchema.safeParse({ q: rawQ });
+  const q = parsed.success ? parsed.data.q : undefined;
+  const statusWhere = status && ["PENDING", "APPROVED", "REJECTED"].includes(status) ? { status: status as "PENDING" | "APPROVED" | "REJECTED" } : {};
+  const where = q
+    ? {
+        AND: [
+          statusWhere,
+          {
+            OR: [
+              { comment: { contains: q, mode: "insensitive" as const } },
+              { user: { name: { contains: q, mode: "insensitive" as const } } },
+              { user: { email: { contains: q, mode: "insensitive" as const } } },
+              { beach: { name: { contains: q, mode: "insensitive" as const } } },
+              { accommodation: { name: { contains: q, mode: "insensitive" as const } } },
+            ],
+          },
+        ],
+      }
+    : statusWhere;
   const reviews = await prisma.review.findMany({
-    where,
+    where: where as never,
     include: { user: true, beach: true, accommodation: true },
     orderBy: { createdAt: "desc" },
     take: 50,
@@ -115,6 +136,13 @@ export default async function AdminReviewsPage({ searchParams }: { searchParams:
             Rejected
           </a>
         </div>
+        <form method="GET" className="mt-3 flex gap-2">
+          {status ? <input type="hidden" name="status" value={status} /> : null}
+          <AdminSearchAutocomplete name="q" defaultValue={q ?? ""} placeholder="Search reviewer name/email, comment, beach/accommodation..." entity="reviews" />
+          <Button type="submit" variant="outline" size="sm">Search</Button>
+          <a href={status ? `/admin/reviews?status=${status}` : "/admin/reviews"} className="inline-flex h-7 items-center justify-center rounded-md border px-2.5 text-xs hover:bg-muted">Clear</a>
+        </form>
+        {q ? <p className="mt-2 text-xs text-muted-foreground">Showing {reviews.length} result{reviews.length === 1 ? "" : "s"} for &ldquo;{q}&rdquo;{status ? ` in ${status}` : ""}</p> : null}
       </div>
 
       <div className="space-y-4">

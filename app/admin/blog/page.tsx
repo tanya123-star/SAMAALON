@@ -3,6 +3,9 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { blogPostSchema } from "@/lib/validations/blog";
+import { searchParamsSchema } from "@/lib/validations/search";
+import { Button } from "@/components/ui/button";
+import { AdminSearchAutocomplete } from "@/components/admin/AdminSearchAutocomplete";
 
 async function createPost(formData: FormData) {
   "use server";
@@ -68,10 +71,30 @@ async function deletePost(formData: FormData) {
   revalidatePath("/");
 }
 
-export default async function AdminBlogPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const { error } = await searchParams;
+export default async function AdminBlogPage({ searchParams }: { searchParams: Promise<{ error?: string; q?: string; categoryId?: string; published?: string }> }) {
+  const { error, q: rawQ, categoryId: rawCategoryId, published: rawPublished } = await searchParams;
+  const parsed = searchParamsSchema.safeParse({ q: rawQ });
+  const q = parsed.success ? parsed.data.q : undefined;
+  const categoryId = rawCategoryId?.trim() || undefined;
+  const published = rawPublished?.trim() || undefined;
+  const where = {
+    AND: [
+      q
+        ? {
+            OR: [
+              { title: { contains: q, mode: "insensitive" as const } },
+              { slug: { contains: q, mode: "insensitive" as const } },
+              { content: { contains: q, mode: "insensitive" as const } },
+              { category: { name: { contains: q, mode: "insensitive" as const } } },
+            ],
+          }
+        : {},
+      categoryId ? { categoryId } : {},
+      published === "true" ? { published: true } : published === "false" ? { published: false } : {},
+    ],
+  };
   const [posts, categories] = await Promise.all([
-    prisma.blogPost.findMany({ orderBy: { createdAt: "desc" }, include: { category: true } }),
+    prisma.blogPost.findMany({ where: where as never, orderBy: { createdAt: "desc" }, include: { category: true } }),
     prisma.blogCategory.findMany({ orderBy: { name: "asc" } }),
   ]);
   return (
@@ -102,6 +125,25 @@ export default async function AdminBlogPage({ searchParams }: { searchParams: Pr
           Create Post
         </button>
       </form>
+      <form method="GET" className="mt-4 flex gap-2">
+        <AdminSearchAutocomplete name="q" defaultValue={q ?? ""} placeholder="Search title, slug, content, category..." entity="blog" />
+        <select name="categoryId" defaultValue={categoryId ?? ""} className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm">
+          <option value="">All Categories</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select name="published" defaultValue={published ?? ""} className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm">
+          <option value="">All Status</option>
+          <option value="true">Published</option>
+          <option value="false">Draft</option>
+        </select>
+        <Button type="submit" variant="outline" size="sm">Search</Button>
+        <a href="/admin/blog" className="inline-flex h-7 items-center justify-center rounded-md border px-2.5 text-xs hover:bg-muted">Clear</a>
+      </form>
+      {q || categoryId || published ? <p className="mt-2 text-xs text-muted-foreground">Showing {posts.length} result{posts.length === 1 ? "" : "s"}{q ? ` for “${q}”` : ""}{categoryId ? ` in ${categories.find((c) => c.id === categoryId)?.name ?? "category"}` : ""}{published ? ` · ${published === "true" ? "Published" : "Draft"}` : ""}</p> : null}
       <div className="mt-6 space-y-2">
         {posts.map((p) => (
           <div key={p.id} className="flex items-center justify-between rounded border px-3 py-2 text-sm">

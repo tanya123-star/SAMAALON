@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { ParallaxHero } from "@/components/scrolling/ParallaxHero";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default async function HomePage() {
   const [featuredBeaches, popularAccommodations, latestPosts] = await Promise.all([
@@ -57,11 +58,7 @@ export default async function HomePage() {
               >
                 {/* Image Showcase */}
                 <div className="relative h-64 w-full overflow-hidden bg-slate-100">
-                  <img
-                    src={b.images[0]?.url || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"}
-                    alt={b.name}
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
+                  <SafeImage src={b.images[0]?.url || "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"} alt={b.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                   <div className="absolute top-4 right-4 rounded-full bg-white/90 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-[#1C2A28] shadow-sm">
                     {b.entranceFee ? `₱${b.entranceFee.toString()} Entry` : "Public"}
                   </div>
@@ -108,11 +105,7 @@ export default async function HomePage() {
             {popularAccommodations.map((a) => (
               <div key={a.id} className="group flex flex-col rounded-2xl border border-[#1C2A28]/10 bg-[#FAF8F5] p-6 transition-all hover:bg-white hover:shadow-lg">
                 <div className="h-48 rounded-xl overflow-hidden mb-4 bg-slate-200">
-                  <img
-                    src={a.images[0]?.url || "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80"}
-                    alt={a.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  <SafeImage src={a.images[0]?.url || "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80"} alt={a.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 </div>
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5A6B68]">{a.beach.name}</span>
                 <h3 className="font-serif text-lg font-bold text-[#1C2A28] mt-1">

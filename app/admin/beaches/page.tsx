@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { beachSchema } from "@/lib/validations/beach";
+import { searchParamsSchema } from "@/lib/validations/search";
+import { Button } from "@/components/ui/button";
+import { AdminSearchAutocomplete } from "@/components/admin/AdminSearchAutocomplete";
 
 async function createBeach(formData: FormData) {
   "use server";
@@ -65,10 +68,22 @@ async function deleteBeach(formData: FormData) {
   revalidatePath("/");
 }
 
-export default async function AdminBeachesPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const { error } = await searchParams;
+export default async function AdminBeachesPage({ searchParams }: { searchParams: Promise<{ error?: string; q?: string }> }) {
+  const { error, q: rawQ } = await searchParams;
+  const parsed = searchParamsSchema.safeParse({ q: rawQ });
+  const q = parsed.success ? parsed.data.q : undefined;
+  const where = q
+    ? {
+        OR: [
+          { name: { contains: q, mode: "insensitive" as const } },
+          { slug: { contains: q, mode: "insensitive" as const } },
+          { location: { contains: q, mode: "insensitive" as const } },
+          { description: { contains: q, mode: "insensitive" as const } },
+        ],
+      }
+    : {};
   const [beaches, amenities] = await Promise.all([
-    prisma.beach.findMany({ orderBy: { createdAt: "desc" }, include: { _count: { select: { accommodations: true } } } }),
+    prisma.beach.findMany({ where: where as never, orderBy: { createdAt: "desc" }, include: { _count: { select: { accommodations: true } } } }),
     prisma.amenity.findMany({ orderBy: { name: "asc" } }),
   ]);
   return (
@@ -112,6 +127,12 @@ export default async function AdminBeachesPage({ searchParams }: { searchParams:
           Create Beach
         </button>
       </form>
+      <form method="GET" className="mt-4 flex gap-2">
+        <AdminSearchAutocomplete name="q" defaultValue={q ?? ""} placeholder="Search name, slug, or location..." entity="beaches" />
+        <Button type="submit" variant="outline" size="sm">Search</Button>
+        <a href="/admin/beaches" className="inline-flex h-7 items-center justify-center rounded-md border px-2.5 text-xs hover:bg-muted">Clear</a>
+      </form>
+      {q ? <p className="mt-2 text-xs text-muted-foreground">Showing {beaches.length} result{beaches.length === 1 ? "" : "s"} for &ldquo;{q}&rdquo;</p> : null}
       <div className="mt-6 space-y-2">
         {beaches.map((b) => (
           <div key={b.id} className="flex items-center justify-between rounded border px-3 py-2 text-sm">

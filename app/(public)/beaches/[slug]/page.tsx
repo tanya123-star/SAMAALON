@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default async function BeachDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -30,11 +31,7 @@ export default async function BeachDetailPage({ params }: { params: Promise<{ sl
     <div className="flex flex-col min-h-screen bg-[#FAF8F5]">
       {/* 1. Hero Gallery Showcase */}
       <section className="relative w-full h-[60vh] min-h-[450px] bg-slate-900 overflow-hidden">
-        <img
-          src={primaryImage}
-          alt={beach.name}
-          className="w-full h-full object-cover opacity-90"
-        />
+        <SafeImage src={primaryImage} alt={beach.name} className="w-full h-full object-cover opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1C2A28] via-[#1C2A28]/40 to-transparent" />
 
         <div className="absolute bottom-0 inset-x-0 mx-auto max-w-7xl px-4 sm:px-8 pb-10 text-white z-10">

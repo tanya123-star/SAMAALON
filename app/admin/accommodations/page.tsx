@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { accommodationSchema } from "@/lib/validations/accommodation";
+import { searchParamsSchema } from "@/lib/validations/search";
+import { Button } from "@/components/ui/button";
+import { AdminSearchAutocomplete } from "@/components/admin/AdminSearchAutocomplete";
 
 async function createAccommodation(formData: FormData) {
   "use server";
@@ -71,10 +74,28 @@ async function deleteAccommodation(formData: FormData) {
   revalidatePath("/");
 }
 
-export default async function AdminAccommodationsPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
-  const { error } = await searchParams;
+export default async function AdminAccommodationsPage({ searchParams }: { searchParams: Promise<{ error?: string; q?: string; beachId?: string }> }) {
+  const { error, q: rawQ, beachId: rawBeachId } = await searchParams;
+  const parsed = searchParamsSchema.safeParse({ q: rawQ });
+  const q = parsed.success ? parsed.data.q : undefined;
+  const beachId = rawBeachId?.trim() || undefined;
+  const where = {
+    AND: [
+      q
+        ? {
+            OR: [
+              { name: { contains: q, mode: "insensitive" as const } },
+              { slug: { contains: q, mode: "insensitive" as const } },
+              { description: { contains: q, mode: "insensitive" as const } },
+              { beach: { name: { contains: q, mode: "insensitive" as const } } },
+            ],
+          }
+        : {},
+      beachId ? { beachId } : {},
+    ],
+  };
   const [accommodations, beaches, amenities] = await Promise.all([
-    prisma.accommodation.findMany({ include: { beach: true }, orderBy: { createdAt: "desc" } }),
+    prisma.accommodation.findMany({ where: where as never, include: { beach: true }, orderBy: { createdAt: "desc" } }),
     prisma.beach.findMany({ orderBy: { name: "asc" } }),
     prisma.amenity.findMany({ orderBy: { name: "asc" } }),
   ]);
@@ -124,6 +145,20 @@ export default async function AdminAccommodationsPage({ searchParams }: { search
           Create Accommodation
         </button>
       </form>
+      <form method="GET" className="mt-4 flex gap-2">
+        <AdminSearchAutocomplete name="q" defaultValue={q ?? ""} placeholder="Search name, slug, description, beach..." entity="accommodations" />
+        <select name="beachId" defaultValue={beachId ?? ""} className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm">
+          <option value="">All Beaches</option>
+          {beaches.map((b) => (
+            <option key={b.id} value={b.id}>
+              {b.name}
+            </option>
+          ))}
+        </select>
+        <Button type="submit" variant="outline" size="sm">Search</Button>
+        <a href="/admin/accommodations" className="inline-flex h-7 items-center justify-center rounded-md border px-2.5 text-xs hover:bg-muted">Clear</a>
+      </form>
+      {q || beachId ? <p className="mt-2 text-xs text-muted-foreground">Showing {accommodations.length} result{accommodations.length === 1 ? "" : "s"}{q ? ` for “${q}”` : ""}{beachId ? ` in ${beaches.find((b) => b.id === beachId)?.name ?? "beach"}` : ""}</p> : null}
       <div className="mt-6 space-y-2">
         {accommodations.map((a) => (
           <div key={a.id} className="flex items-center justify-between rounded border px-3 py-2 text-sm">
