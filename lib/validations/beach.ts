@@ -10,7 +10,10 @@ export const beachSchema = z.object({
   contactInfo: z.string().max(200).optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
-  googleMapsUrl: z.string().url().optional().or(z.literal("")),
+  googleMapsUrl: z.string()
+  .url()
+  .optional()
+  .or(z.string().refine((v) => v === "" || v.startsWith("/uploads/"), { message: "Must be a valid URL or /uploads/ path" })),
   amenities: z.array(z.string()).optional(),
 });
 
