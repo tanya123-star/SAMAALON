@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { FavoriteButton } from "@/components/favorites/FavoriteButton";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
 import { BookNowButton } from "@/components/booking/BookNowButton";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default async function AccommodationDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -32,7 +33,7 @@ export default async function AccommodationDetailPage({ params }: { params: Prom
     <div className="flex flex-col min-h-screen bg-[#FAF8F5]">
       {/* Hero Cover */}
       <section className="relative w-full h-[55vh] min-h-[400px] bg-slate-900 overflow-hidden">
-        <img src={primaryImage} alt={acc.name} className="w-full h-full object-cover opacity-90" />
+        <SafeImage src={primaryImage} alt={acc.name} className="w-full h-full object-cover opacity-90" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1C2A28] via-[#1C2A28]/40 to-transparent" />
 
         <div className="absolute bottom-0 inset-x-0 mx-auto max-w-7xl px-4 sm:px-8 pb-10 text-white z-10">

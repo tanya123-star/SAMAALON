@@ -5,7 +5,10 @@ export const blogPostSchema = z.object({
   slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
   content: z.string().min(1),
   categoryId: z.string().cuid().optional().or(z.literal("")),
-  featuredImage: z.string().url().optional().or(z.literal("")),
+  featuredImage: z.string()
+  .url()
+  .optional()
+  .or(z.string().refine((v) => v === "" || v.startsWith("/uploads/"), { message: "Must be a valid URL or /uploads/ path" })),
 });
 
 export const blogCategorySchema = z.object({

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LockKeyhole } from "lucide-react";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (role !== "ADMIN") {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
-        <span className="text-4xl block mb-2">🔒</span>
+        <LockKeyhole size={36} strokeWidth={2} className="mx-auto mb-2 block text-[#1C2A28]" aria-hidden />
         <h1 className="text-3xl font-bold font-serif text-[#1C2A28]">403 — Access Restricted</h1>
         <p className="mt-2 text-xs text-[#5A6B68]">Admin privileges required. Current role: <strong className="uppercase">{role ?? "USER"}</strong></p>
         <Link href="/" className="mt-6 inline-block rounded-full bg-[#1C2A28] px-6 py-2 text-xs font-bold text-white hover:bg-[#2D6A4F] transition-all">

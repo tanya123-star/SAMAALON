@@ -66,14 +66,20 @@ export default async function RoomTypesPage({ params }: { params: Promise<{ id: 
           <div key={r.id} className="flex items-center justify-between rounded border px-3 py-2 text-sm">
             <span>
               {r.name} — ₱{String(r.price)} — {r.maxGuests ? `${r.maxGuests} guests` : "—"} — {r.amenities ?? ""}
+              {r.imageUrl ? ` — 🖼 ${r.imageUrl}` : ""}
             </span>
-            <form action={deleteRoomType}>
-              <input type="hidden" name="id" value={r.id} />
-              <input type="hidden" name="accommodationId" value={accommodationId} />
-              <button type="submit" className="rounded border px-2 py-1 text-xs hover:bg-muted">
-                Delete
-              </button>
-            </form>
+            <div className="flex gap-1">
+              <Link href={`/admin/accommodations/${accommodationId}/room-types/${r.id}/edit`} className="rounded border px-2 py-1 text-xs hover:bg-muted">
+                Edit
+              </Link>
+              <form action={deleteRoomType}>
+                <input type="hidden" name="id" value={r.id} />
+                <input type="hidden" name="accommodationId" value={accommodationId} />
+                <button type="submit" className="rounded border px-2 py-1 text-xs hover:bg-muted">
+                  Delete
+                </button>
+              </form>
+            </div>
           </div>
         ))}
         {roomTypes.length === 0 ? <p className="text-sm text-muted-foreground">No room types yet.</p> : null}

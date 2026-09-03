@@ -6,6 +6,10 @@ export const roomTypeSchema = z.object({
   price: z.coerce.number().min(0),
   maxGuests: z.coerce.number().int().min(1).max(20).optional(),
   amenities: z.string().max(1000).optional(),
+  imageUrl: z.string()
+    .url()
+    .optional()
+    .or(z.string().refine((v) => v === "" || v.startsWith("/uploads/"), { message: "Must be a valid URL or /uploads/ path" })),
   accommodationId: z.string().cuid(),
 });
 

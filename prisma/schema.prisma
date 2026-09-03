@@ -136,6 +136,7 @@ model RoomType {
   price           Decimal       @db.Decimal(10, 2)
   maxGuests       Int?
   amenities       String?       @db.Text
+  imageUrl        String?
   images          RoomTypeImage[]
 
   @@index([accommodationId])

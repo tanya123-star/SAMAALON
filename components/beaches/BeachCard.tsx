@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 type Beach = {
   id: string;
@@ -21,11 +22,7 @@ export function BeachCard({ beach }: { beach: Beach }) {
     <div className="group flex flex-col rounded-2xl border border-[#1C2A28]/10 bg-white overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Cover Image */}
       <div className="relative h-56 w-full overflow-hidden bg-slate-100">
-        <img
-          src={imageUrl}
-          alt={beach.name}
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        />
+        <SafeImage src={imageUrl} alt={beach.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
         <div className="absolute top-3 right-3 rounded-full bg-white/90 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-[#1C2A28] shadow-sm">
           {beach.entranceFee ? `₱${String(beach.entranceFee)} Entrance` : "Free Access"}
         </div>
