@@ -54,13 +54,13 @@ export function LogoutConfirmDialog({ triggerClassName, buttonLabel = "LOGOUT" }
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/30 backdrop-blur-sm"
           />
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="logout-title"
-            onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md rounded-2xl bg-white border border-[#1C2A28]/10 p-6 shadow-xl"
-          >
+<div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="logout-title"
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-md rounded-2xl bg-white border border-[#1C2A28]/10 p-6 shadow-xl"
+        >
             <button
               type="button"
               aria-label="Close"
