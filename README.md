@@ -16,4 +16,14 @@
 
 **Today:** docs-only planning. No code yet — see [docs/07-roadmap.md](./docs/07-roadmap.md) for build order.
 
+## Development
+
+```bash
+npm install        # install deps and update package-lock.json
+npm run db:generate
+npm run dev
+```
+
+> **Lockfile rule:** Do not delete `package-lock.json`. After any `package.json` change, run `npm install` locally and commit the updated `package-lock.json`. CI uses `npm ci` (`ci.yml:27`) which requires the lockfile to be in sync — if it is missing or stale, CI fails with `Missing: @emnapi/* from lock file`.
+
 **License:** MIT — see [LICENSE](./LICENSE)

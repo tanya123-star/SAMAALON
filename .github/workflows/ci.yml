@@ -24,6 +24,13 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Verify lockfile exists
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "::error::package-lock.json is missing. Run 'npm install' locally and commit the updated lockfile."
+            exit 1
+          fi
+
       - run: npm ci
       - run: npm run db:generate
       - run: npm run lint
