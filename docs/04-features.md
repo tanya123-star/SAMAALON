@@ -38,6 +38,7 @@ Beach (e.g., Paradise Beach)
 **Pages:** `app/(public)/accommodations/[slug]/page.tsx` — photos, rooms, prices, amenities, check-in/out, reviews, **Book Now** button.
 
 ### Room Types (§5)
+
 Fields: name, description, price, maxGuests, amenities, photos. Listed within accommodation details; each accommodation can have many.
 
 ## 4.4 Booking Redirect (§6)
@@ -69,9 +70,10 @@ Initial posts: 10 Best Beaches, Things To Do, How to Get There, Best Accommodati
 ## 4.9 Search & Filtering (§12)
 
 Global search across: beach names, accommodation names, locations, blog posts. Filters:
+
 - Beach: location, entrance fee, amenities, rating.
 - Accommodation: price range, guests, amenities, rating, beach.
-Implement via query params (`?q=&location=&amenities=&rating=`) + Prisma `where`; later Postgres full-text.
+  Implement via query params (`?q=&location=&amenities=&rating=`) + Prisma `where`; later Postgres full-text.
 
 ## 4.10 Maps (§13)
 

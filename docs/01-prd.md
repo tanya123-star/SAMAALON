@@ -6,9 +6,10 @@
 
 Provide one centralized, minimalist website where visitors discover Samal Island beaches, accommodations, rooms, amenities, maps, and blogs — with Google-authenticated favorites, ratings/reviews, and Facebook-redirect booking. No in-site reservations/payments.
 
-> Final Scope: *Samaalon is a minimalist Samal Island travel and accommodation discovery platform that allows visitors to explore beaches, accommodations, room types, amenities, travel guides, maps, ratings, and reviews. Visitors can browse freely without an account, while Google-authenticated users can save favorites, submit ratings/reviews, manage their profiles, and access accommodation booking links. Samaalon does not process reservations or payments; instead, authenticated users are redirected to the accommodation's Facebook page to complete their reservation.*
+> Final Scope: _Samaalon is a minimalist Samal Island travel and accommodation discovery platform that allows visitors to explore beaches, accommodations, room types, amenities, travel guides, maps, ratings, and reviews. Visitors can browse freely without an account, while Google-authenticated users can save favorites, submit ratings/reviews, manage their profiles, and access accommodation booking links. Samaalon does not process reservations or payments; instead, authenticated users are redirected to the accommodation's Facebook page to complete their reservation._
 
 Objectives:
+
 - Centralize beach/accommodation discovery (§1).
 - Search/filter (§12), maps (§13), reviews (§8), favorites (§9).
 - Blog travel guides (§11).
@@ -17,26 +18,29 @@ Objectives:
 ## 1.2 User Roles
 
 ### Visitor (unauthenticated)
+
 Can: browse beaches/accommodations, read blogs, search/filter, view maps, read reviews.
 Cannot: favorites, profile, Book Now, rate/review.
 
 ### Authenticated User (Google OAuth)
+
 All Visitor perms + favorites (beaches/accommodations), profile (image/name/email, favorites, reviews), rate/review beaches & accommodations, Book Now.
 
 ### Admin (single, `ADMIN` role)
+
 Manages: beaches, beach photos, amenities, accommodations, room types, accommodation photos, blog posts/categories, reviews/moderation, site content. Dashboard separate from public site. Server-verified role (§20).
 
 ## 1.3 Permission Matrix (§7)
 
-| Feature | Visitor | Google User | Admin |
-|---------|---------|-------------|-------|
-| Browse beaches/accommodations/blogs | ✅ | ✅ | ✅ |
-| Search / Filters / Read reviews / View maps | ✅ | ✅ | ✅ |
-| Favorites (beach/accommodation) | ❌ | ✅ | ✅ |
-| User profile | ❌ | ✅ | ✅ |
-| Book Now (Facebook redirect) | ❌ | ✅ | ✅ |
-| Beach/Accommodation rating & review | ❌ | ✅ | ✅* |
-| Manage beaches/accommodations/rooms/blogs/reviews | ❌ | ❌ | ✅ |
+| Feature                                           | Visitor | Google User | Admin |
+| ------------------------------------------------- | ------- | ----------- | ----- |
+| Browse beaches/accommodations/blogs               | ✅      | ✅          | ✅    |
+| Search / Filters / Read reviews / View maps       | ✅      | ✅          | ✅    |
+| Favorites (beach/accommodation)                   | ❌      | ✅          | ✅    |
+| User profile                                      | ❌      | ✅          | ✅    |
+| Book Now (Facebook redirect)                      | ❌      | ✅          | ✅    |
+| Beach/Accommodation rating & review               | ❌      | ✅          | ✅*   |
+| Manage beaches/accommodations/rooms/blogs/reviews | ❌      | ❌          | ✅    |
 
 `*` Admin can moderate/delete any review.
 

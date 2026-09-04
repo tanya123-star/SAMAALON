@@ -22,11 +22,11 @@ flowchart TD
 
 ## 5.2 Authorization (RBAC)
 
-| Capability | Visitor | USER | ADMIN |
-|------------|---------|------|-------|
-| Browse/search/read | ✅ | ✅ | ✅ |
-| Favorites, profile, reviews, Book Now | ❌ | ✅ | ✅ |
-| Admin CRUD (beaches/accommodations/rooms/blogs/reviews) | ❌ | ❌ | ✅ |
+| Capability                                              | Visitor | USER | ADMIN |
+| ------------------------------------------------------- | ------- | ---- | ----- |
+| Browse/search/read                                      | ✅      | ✅   | ✅    |
+| Favorites, profile, reviews, Book Now                   | ❌      | ✅   | ✅    |
+| Admin CRUD (beaches/accommodations/rooms/blogs/reviews) | ❌      | ❌   | ✅    |
 
 **Server enforcement (§20):** never rely on hidden buttons. Every Route Handler/Server Action checks `auth()` + `user.role === 'ADMIN'` and returns 403 otherwise. Middleware protects `/admin/*` and `/api/admin/*`.
 

@@ -18,5 +18,6 @@ path_instructions:
     instructions: Ignore third-party dependencies; do not review.
 
   - pattern: ".github/**"
-    instructions: Ignore workflow and Dependabot configuration files; only
-    review if syntax errors are obvious.
+    instructions: >
+      Ignore workflow and Dependabot configuration files; only review if
+      syntax errors are obvious.

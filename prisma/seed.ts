@@ -1,12 +1,12 @@
-import "dotenv/config";
-import { PrismaClient, ModerationStatus } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import "dotenv/config"
+import { PrismaClient, ModerationStatus } from "@prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-const prisma = new PrismaClient({ adapter });
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
-  console.log("Seeding SAMAALON with full Samal Island research content...");
+  console.log("Seeding SAMAALON with full Samal Island research content...")
 
   // 1. Seed Amenities
   const amenityData = [
@@ -22,16 +22,16 @@ async function main() {
     { name: "Infinity Pool", icon: "Sparkles" },
     { name: "Air Conditioning", icon: "Wind" },
     { name: "Cliff Jumping", icon: "Zap" },
-  ];
+  ]
 
-  const amenitiesMap = new Map<string, string>();
+  const amenitiesMap = new Map<string, string>()
   for (const item of amenityData) {
     const amenity = await prisma.amenity.upsert({
       where: { name: item.name },
       update: { icon: item.icon },
       create: { name: item.name, icon: item.icon },
-    });
-    amenitiesMap.set(item.name, amenity.id);
+    })
+    amenitiesMap.set(item.name, amenity.id)
   }
 
   // 2. Blog categories
@@ -43,16 +43,16 @@ async function main() {
     { name: "How to Get There", slug: "how-to-get-there" },
     { name: "Travel Tips", slug: "travel-tips" },
     { name: "Samal Island", slug: "samal-island" },
-  ];
+  ]
 
-  const catMap = new Map<string, string>();
+  const catMap = new Map<string, string>()
   for (const cat of categories) {
     const res = await prisma.blogCategory.upsert({
       where: { slug: cat.slug },
       update: { name: cat.name },
       create: { name: cat.name, slug: cat.slug },
-    });
-    catMap.set(cat.slug, res.id);
+    })
+    catMap.set(cat.slug, res.id)
   }
 
   // 3. Top 10 Beaches Data
@@ -71,16 +71,31 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=7.0907,125.6957",
       avgRating: 4.8,
       reviewCount: 142,
-      amenities: ["Swimming Area", "White Sand Shoreline", "Cottages & Huts", "Restrooms & Showers", "Parking Area", "Restaurant / Canteen", "Wi-Fi"],
+      amenities: [
+        "Swimming Area",
+        "White Sand Shoreline",
+        "Cottages & Huts",
+        "Restrooms & Showers",
+        "Parking Area",
+        "Restaurant / Canteen",
+        "Wi-Fi",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80", alt: "Paradise Island Shoreline" },
-        { url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80", alt: "Paradise Island Gardens" }
+        {
+          url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+          alt: "Paradise Island Shoreline",
+        },
+        {
+          url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+          alt: "Paradise Island Gardens",
+        },
       ],
       accommodations: [
         {
           name: "Paradise Island Premier Resort Rooms",
           slug: "paradise-island-premier-resort",
-          description: "Air-conditioned beachfront villas and family rooms nestled inside lush tropical gardens.",
+          description:
+            "Air-conditioned beachfront villas and family rooms nestled inside lush tropical gardens.",
           priceRange: "₱2,500 - ₱6,500 / night",
           facebookUrl: "https://facebook.com/paradiseislandsamal",
           contactInfo: "+63 82 233 0251",
@@ -89,13 +104,31 @@ async function main() {
           maxGuests: 6,
           avgRating: 4.8,
           reviewCount: 89,
-          amenities: ["Air Conditioning", "Wi-Fi", "Restaurant / Canteen", "White Sand Shoreline"],
+          amenities: [
+            "Air Conditioning",
+            "Wi-Fi",
+            "Restaurant / Canteen",
+            "White Sand Shoreline",
+          ],
           roomTypes: [
-            { name: "Deluxe Garden Villa", price: 3200, maxGuests: 2, description: "Queen bed, garden balcony, AC, private bath.", amenities: "Aircon, Wi-Fi, Hot Shower, Mini Fridge" },
-            { name: "Family Beachfront Suite", price: 5800, maxGuests: 6, description: "Two queen beds, beachfront terrace, spacious lounge.", amenities: "Aircon, Wi-Fi, Ocean View, Cable TV" }
-          ]
-        }
-      ]
+            {
+              name: "Deluxe Garden Villa",
+              price: 3200,
+              maxGuests: 2,
+              description: "Queen bed, garden balcony, AC, private bath.",
+              amenities: "Aircon, Wi-Fi, Hot Shower, Mini Fridge",
+            },
+            {
+              name: "Family Beachfront Suite",
+              price: 5800,
+              maxGuests: 6,
+              description:
+                "Two queen beds, beachfront terrace, spacious lounge.",
+              amenities: "Aircon, Wi-Fi, Ocean View, Cable TV",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Kaputian Beach Park",
@@ -111,15 +144,24 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=6.9689,125.7142",
       avgRating: 4.5,
       reviewCount: 98,
-      amenities: ["Swimming Area", "Cottages & Huts", "Restrooms & Showers", "Parking Area"],
+      amenities: [
+        "Swimming Area",
+        "Cottages & Huts",
+        "Restrooms & Showers",
+        "Parking Area",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80", alt: "Kaputian Beach Palm Trees" }
+        {
+          url: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80",
+          alt: "Kaputian Beach Palm Trees",
+        },
       ],
       accommodations: [
         {
           name: "Kaputian Beachfront Huts",
           slug: "kaputian-beachfront-huts",
-          description: "Rustic open-air and closed wooden huts located right on the public beach.",
+          description:
+            "Rustic open-air and closed wooden huts located right on the public beach.",
           priceRange: "₱800 - ₱2,000 / night",
           facebookUrl: "https://facebook.com/kaputianbeachpark",
           contactInfo: "+63 917 000 1122",
@@ -130,10 +172,16 @@ async function main() {
           reviewCount: 35,
           amenities: ["Cottages & Huts", "White Sand Shoreline"],
           roomTypes: [
-            { name: "Standard Open Hut", price: 800, maxGuests: 4, description: "Bamboo open cottage with mat and electric fan.", amenities: "Electric Fan, Ocean View" }
-          ]
-        }
-      ]
+            {
+              name: "Standard Open Hut",
+              price: 800,
+              maxGuests: 4,
+              description: "Bamboo open cottage with mat and electric fan.",
+              amenities: "Electric Fan, Ocean View",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Canibad Cove",
@@ -149,15 +197,24 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=7.0512,125.7311",
       avgRating: 4.7,
       reviewCount: 110,
-      amenities: ["Cliff Jumping", "Snorkeling Reefs", "Cottages & Huts", "Restrooms & Showers"],
+      amenities: [
+        "Cliff Jumping",
+        "Snorkeling Reefs",
+        "Cottages & Huts",
+        "Restrooms & Showers",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80", alt: "Canibad Cliff Cove" }
+        {
+          url: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80",
+          alt: "Canibad Cliff Cove",
+        },
       ],
       accommodations: [
         {
           name: "Canibad Secret Cove Resort",
           slug: "canibad-secret-cove-resort",
-          description: "Eco-friendly cliffside huts overlooking the turquoise Canibad cove.",
+          description:
+            "Eco-friendly cliffside huts overlooking the turquoise Canibad cove.",
           priceRange: "₱1,200 - ₱3,500 / night",
           facebookUrl: "https://facebook.com/canibadsecretcove",
           contactInfo: "+63 920 123 4567",
@@ -166,12 +223,23 @@ async function main() {
           maxGuests: 5,
           avgRating: 4.6,
           reviewCount: 42,
-          amenities: ["Cliff Jumping", "Cottages & Huts", "Restaurant / Canteen"],
+          amenities: [
+            "Cliff Jumping",
+            "Cottages & Huts",
+            "Restaurant / Canteen",
+          ],
           roomTypes: [
-            { name: "Cliffside Bamboo Villa", price: 2200, maxGuests: 3, description: "Elevated bamboo cabin with balcony overlooking the cove.", amenities: "Fan, Sea View Balcony, Private Toilet" }
-          ]
-        }
-      ]
+            {
+              name: "Cliffside Bamboo Villa",
+              price: 2200,
+              maxGuests: 3,
+              description:
+                "Elevated bamboo cabin with balcony overlooking the cove.",
+              amenities: "Fan, Sea View Balcony, Private Toilet",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Isla Reta Beach Resort",
@@ -187,15 +255,25 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=6.9421,125.6845",
       avgRating: 4.9,
       reviewCount: 210,
-      amenities: ["White Sand Shoreline", "Snorkeling Reefs", "Cottages & Huts", "Restaurant / Canteen", "Restrooms & Showers"],
+      amenities: [
+        "White Sand Shoreline",
+        "Snorkeling Reefs",
+        "Cottages & Huts",
+        "Restaurant / Canteen",
+        "Restrooms & Showers",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1200&q=80", alt: "Isla Reta Talisay Shore" }
+        {
+          url: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1200&q=80",
+          alt: "Isla Reta Talisay Shore",
+        },
       ],
       accommodations: [
         {
           name: "Isla Reta Beachfront Pavilions",
           slug: "isla-reta-beachfront-pavilions",
-          description: "Rustic wooden rooms and beach pavilions under the Talisay trees.",
+          description:
+            "Rustic wooden rooms and beach pavilions under the Talisay trees.",
           priceRange: "₱1,000 - ₱3,000 / night",
           facebookUrl: "https://facebook.com/islaretabeachresort",
           contactInfo: "+63 928 555 7890",
@@ -206,10 +284,16 @@ async function main() {
           reviewCount: 95,
           amenities: ["White Sand Shoreline", "Cottages & Huts"],
           roomTypes: [
-            { name: "Talisay Wooden Room", price: 1500, maxGuests: 2, description: "Basic wooden room right on the sand.", amenities: "Fan, Common Bath, Beach Access" }
-          ]
-        }
-      ]
+            {
+              name: "Talisay Wooden Room",
+              price: 1500,
+              maxGuests: 2,
+              description: "Basic wooden room right on the sand.",
+              amenities: "Fan, Common Bath, Beach Access",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "SECDEA Beach Resort",
@@ -225,15 +309,25 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=6.9854,125.7289",
       avgRating: 4.7,
       reviewCount: 160,
-      amenities: ["Infinity Pool", "Water Sports & Jet Ski", "Restaurant / Canteen", "Wi-Fi", "Parking Area"],
+      amenities: [
+        "Infinity Pool",
+        "Water Sports & Jet Ski",
+        "Restaurant / Canteen",
+        "Wi-Fi",
+        "Parking Area",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80", alt: "SECDEA Infinity Pool" }
+        {
+          url: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80",
+          alt: "SECDEA Infinity Pool",
+        },
       ],
       accommodations: [
         {
           name: "SECDEA Deluxe Villas",
           slug: "secdea-deluxe-villas",
-          description: "Luxury poolside and seaside villas equipped with modern hotel amenities.",
+          description:
+            "Luxury poolside and seaside villas equipped with modern hotel amenities.",
           priceRange: "₱4,500 - ₱12,000 / night",
           facebookUrl: "https://facebook.com/secdeabeachresort",
           contactInfo: "+63 82 295 2912",
@@ -242,12 +336,24 @@ async function main() {
           maxGuests: 8,
           avgRating: 4.7,
           reviewCount: 78,
-          amenities: ["Infinity Pool", "Air Conditioning", "Wi-Fi", "Restaurant / Canteen"],
+          amenities: [
+            "Infinity Pool",
+            "Air Conditioning",
+            "Wi-Fi",
+            "Restaurant / Canteen",
+          ],
           roomTypes: [
-            { name: "Seaside Villa", price: 6500, maxGuests: 4, description: "Luxury villa with glass balcony overlooking the gulf.", amenities: "Aircon, Wi-Fi, Cable TV, Breakfast Included" }
-          ]
-        }
-      ]
+            {
+              name: "Seaside Villa",
+              price: 6500,
+              maxGuests: 4,
+              description:
+                "Luxury villa with glass balcony overlooking the gulf.",
+              amenities: "Aircon, Wi-Fi, Cable TV, Breakfast Included",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Pearl Farm Beach Resort",
@@ -263,15 +369,26 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=6.9934,125.7056",
       avgRating: 4.9,
       reviewCount: 320,
-      amenities: ["Infinity Pool", "White Sand Shoreline", "Restaurant / Canteen", "Wi-Fi", "Water Sports & Jet Ski", "Snorkeling Reefs"],
+      amenities: [
+        "Infinity Pool",
+        "White Sand Shoreline",
+        "Restaurant / Canteen",
+        "Wi-Fi",
+        "Water Sports & Jet Ski",
+        "Snorkeling Reefs",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80", alt: "Pearl Farm Overwater Cottages" }
+        {
+          url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+          alt: "Pearl Farm Overwater Cottages",
+        },
       ],
       accommodations: [
         {
           name: "Pearl Farm Samal Suites & Water Cottages",
           slug: "pearl-farm-samal-suites",
-          description: "World-class 5-star overwater cottages and Malipano luxury villas.",
+          description:
+            "World-class 5-star overwater cottages and Malipano luxury villas.",
           priceRange: "₱12,000 - ₱35,000 / night",
           facebookUrl: "https://facebook.com/pearlfarmbnresort",
           contactInfo: "+63 82 285 0601",
@@ -280,12 +397,26 @@ async function main() {
           maxGuests: 6,
           avgRating: 4.9,
           reviewCount: 180,
-          amenities: ["Infinity Pool", "Air Conditioning", "Wi-Fi", "Restaurant / Canteen", "Water Sports & Jet Ski"],
+          amenities: [
+            "Infinity Pool",
+            "Air Conditioning",
+            "Wi-Fi",
+            "Restaurant / Canteen",
+            "Water Sports & Jet Ski",
+          ],
           roomTypes: [
-            { name: "Mandaya Water Cottage", price: 16500, maxGuests: 2, description: "Stilt cottage perched over clear turquoise ocean waters.", amenities: "King Bed, Balcony Sea Access, Luxury Spa Bath, Aircon" }
-          ]
-        }
-      ]
+            {
+              name: "Mandaya Water Cottage",
+              price: 16500,
+              maxGuests: 2,
+              description:
+                "Stilt cottage perched over clear turquoise ocean waters.",
+              amenities:
+                "King Bed, Balcony Sea Access, Luxury Spa Bath, Aircon",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Cavanico iL Mare Resort",
@@ -301,15 +432,25 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=7.1205,125.6812",
       avgRating: 4.6,
       reviewCount: 88,
-      amenities: ["White Sand Shoreline", "Water Sports & Jet Ski", "Restaurant / Canteen", "Parking Area", "Restrooms & Showers"],
+      amenities: [
+        "White Sand Shoreline",
+        "Water Sports & Jet Ski",
+        "Restaurant / Canteen",
+        "Parking Area",
+        "Restrooms & Showers",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80", alt: "Cavanico Beachfront" }
+        {
+          url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+          alt: "Cavanico Beachfront",
+        },
       ],
       accommodations: [
         {
           name: "Cavanico Beachfront Rooms",
           slug: "cavanico-beachfront-rooms",
-          description: "Modern beach cabins steps away from the water sports area.",
+          description:
+            "Modern beach cabins steps away from the water sports area.",
           priceRange: "₱2,200 - ₱5,500 / night",
           facebookUrl: "https://facebook.com/cavanicoilmare",
           contactInfo: "+63 917 888 9900",
@@ -320,10 +461,16 @@ async function main() {
           reviewCount: 40,
           amenities: ["Air Conditioning", "Wi-Fi", "Water Sports & Jet Ski"],
           roomTypes: [
-            { name: "Beachfront Cabin", price: 3500, maxGuests: 4, description: "Modern cabin with veranda.", amenities: "Aircon, TV, Private Bathroom" }
-          ]
-        }
-      ]
+            {
+              name: "Beachfront Cabin",
+              price: 3500,
+              maxGuests: 4,
+              description: "Modern cabin with veranda.",
+              amenities: "Aircon, TV, Private Bathroom",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Costa Marina Beach Resort",
@@ -339,9 +486,17 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=7.0892,125.6948",
       avgRating: 4.7,
       reviewCount: 75,
-      amenities: ["White Sand Shoreline", "Cottages & Huts", "Restaurant / Canteen", "Restrooms & Showers"],
+      amenities: [
+        "White Sand Shoreline",
+        "Cottages & Huts",
+        "Restaurant / Canteen",
+        "Restrooms & Showers",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80", alt: "Costa Marina Garden Shoreline" }
+        {
+          url: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=80",
+          alt: "Costa Marina Garden Shoreline",
+        },
       ],
       accommodations: [
         {
@@ -358,10 +513,16 @@ async function main() {
           reviewCount: 32,
           amenities: ["Air Conditioning", "Cottages & Huts"],
           roomTypes: [
-            { name: "Garden Cabana", price: 2500, maxGuests: 2, description: "Cozy wooden cabana surrounded by gardens.", amenities: "Aircon, Veranda" }
-          ]
-        }
-      ]
+            {
+              name: "Garden Cabana",
+              price: 2500,
+              maxGuests: 2,
+              description: "Cozy wooden cabana surrounded by gardens.",
+              amenities: "Aircon, Veranda",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "Vanishing Island & Coral Garden",
@@ -379,9 +540,12 @@ async function main() {
       reviewCount: 94,
       amenities: ["Snorkeling Reefs", "Cottages & Huts", "Swimming Area"],
       images: [
-        { url: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80", alt: "Vanishing Island Sandbar" }
+        {
+          url: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80",
+          alt: "Vanishing Island Sandbar",
+        },
       ],
-      accommodations: []
+      accommodations: [],
     },
     {
       name: "Maxima Aqua Fun",
@@ -397,15 +561,24 @@ async function main() {
       googleMapsUrl: "https://maps.google.com/?q=7.0289,125.7112",
       avgRating: 4.5,
       reviewCount: 105,
-      amenities: ["Water Sports & Jet Ski", "Snorkeling Reefs", "Restaurant / Canteen", "Cottages & Huts"],
+      amenities: [
+        "Water Sports & Jet Ski",
+        "Snorkeling Reefs",
+        "Restaurant / Canteen",
+        "Cottages & Huts",
+      ],
       images: [
-        { url: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80", alt: "Maxima Ocean Slide" }
+        {
+          url: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80",
+          alt: "Maxima Ocean Slide",
+        },
       ],
       accommodations: [
         {
           name: "Maxima Aqua Cabins",
           slug: "maxima-aqua-cabins",
-          description: "Cliffside wooden cabins for overnight adventure seekers.",
+          description:
+            "Cliffside wooden cabins for overnight adventure seekers.",
           priceRange: "₱1,800 - ₱4,500 / night",
           facebookUrl: "https://facebook.com/maximaaquafun",
           contactInfo: "+63 922 847 4700",
@@ -416,12 +589,18 @@ async function main() {
           reviewCount: 48,
           amenities: ["Cottages & Huts", "Restaurant / Canteen"],
           roomTypes: [
-            { name: "Cliffside Room", price: 2400, maxGuests: 4, description: "Wooden room perched above the diving deck.", amenities: "Fan, Ocean View" }
-          ]
-        }
-      ]
-    }
-  ];
+            {
+              name: "Cliffside Room",
+              price: 2400,
+              maxGuests: 4,
+              description: "Wooden room perched above the diving deck.",
+              amenities: "Fan, Ocean View",
+            },
+          ],
+        },
+      ],
+    },
+  ]
 
   for (const b of beachesData) {
     const beach = await prisma.beach.upsert({
@@ -453,11 +632,11 @@ async function main() {
         avgRating: b.avgRating,
         reviewCount: b.reviewCount,
       },
-    });
+    })
 
     // Link beach images
     for (let i = 0; i < b.images.length; i++) {
-      const img = b.images[i];
+      const img = b.images[i]
       await prisma.beachImage.create({
         data: {
           beachId: beach.id,
@@ -465,18 +644,18 @@ async function main() {
           alt: img.alt,
           sortOrder: i,
         },
-      });
+      })
     }
 
     // Link beach amenities
     for (const amName of b.amenities) {
-      const amId = amenitiesMap.get(amName);
+      const amId = amenitiesMap.get(amName)
       if (amId) {
         await prisma.beachAmenity.upsert({
           where: { beachId_amenityId: { beachId: beach.id, amenityId: amId } },
           update: {},
           create: { beachId: beach.id, amenityId: amId },
-        });
+        })
       }
     }
 
@@ -510,7 +689,7 @@ async function main() {
           avgRating: acc.avgRating,
           reviewCount: acc.reviewCount,
         },
-      });
+      })
 
       // Link room types
       for (const rt of acc.roomTypes) {
@@ -523,18 +702,23 @@ async function main() {
             maxGuests: rt.maxGuests,
             amenities: rt.amenities,
           },
-        });
+        })
       }
 
       // Link accommodation amenities
       for (const amName of acc.amenities) {
-        const amId = amenitiesMap.get(amName);
+        const amId = amenitiesMap.get(amName)
         if (amId) {
           await prisma.accommodationAmenity.upsert({
-            where: { accommodationId_amenityId: { accommodationId: createdAcc.id, amenityId: amId } },
+            where: {
+              accommodationId_amenityId: {
+                accommodationId: createdAcc.id,
+                amenityId: amId,
+              },
+            },
             update: {},
             create: { accommodationId: createdAcc.id, amenityId: amId },
-          });
+          })
         }
       }
     }
@@ -548,7 +732,8 @@ async function main() {
       categorySlug: "beaches",
       content:
         "Samal Island (Island Garden City of Samal) is home to some of Davao's most striking coastlines. From the vibrant shorelines of Paradise Island and the cliffside diving cove of Canibad to the secluded Talisay tree canopy of Isla Reta on Talikud Island, discover fees, access routes, and local insider tips for all 10 top beaches.",
-      featuredImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+      featuredImage:
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
     },
     {
       title: "Things to Do in Samal Island",
@@ -556,7 +741,8 @@ async function main() {
       categorySlug: "things-to-do",
       content:
         "Beyond lounging on white sand, Samal offers thrill-seeking water slide drops at Maxima Aqua Fun, island hopping around Vanishing Island, snorkeling at Coral Garden, and exploring the Monfort Bat Sanctuary.",
-      featuredImage: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80",
+      featuredImage:
+        "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=1200&q=80",
     },
     {
       title: "How to Get to Samal Island",
@@ -564,7 +750,8 @@ async function main() {
       categorySlug: "how-to-get-there",
       content:
         "Traveling from Davao City to Samal Island is fast and straightforward. Head to Sasa Wharf for car/passenger ferry transfers to Babak Port (15 minutes), or board passenger boats at Sta. Ana Wharf directly heading to Talikud Island.",
-      featuredImage: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1200&q=80",
+      featuredImage:
+        "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1200&q=80",
     },
     {
       title: "Best Accommodations in Samal",
@@ -572,7 +759,8 @@ async function main() {
       categorySlug: "accommodations",
       content:
         "Whether you're seeking 5-star luxury at Pearl Farm Beach Resort, family villas at Paradise Island, or rustic beachfront huts at Kaputian, here is your definitive guide to staying in Samal Island.",
-      featuredImage: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80",
+      featuredImage:
+        "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80",
     },
     {
       title: "Samal Island Travel Guide",
@@ -580,12 +768,13 @@ async function main() {
       categorySlug: "travel-guides",
       content:
         "Planning your first visit to Samal Island? Learn about local environmental user fees, best travel months (November through May), tricycle fare estimates, and essential packing tips.",
-      featuredImage: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      featuredImage:
+        "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
     },
-  ];
+  ]
 
   for (const topic of blogTopics) {
-    const catId = catMap.get(topic.categorySlug);
+    const catId = catMap.get(topic.categorySlug)
     await prisma.blogPost.upsert({
       where: { slug: topic.slug },
       update: {
@@ -605,17 +794,19 @@ async function main() {
         published: true,
         publishedAt: new Date(),
       },
-    });
+    })
   }
 
-  console.log("Seed completed: 10 Samal beaches, accommodations, rooms, amenities, and blogs seeded successfully!");
+  console.log(
+    "Seed completed: 10 Samal beaches, accommodations, rooms, amenities, and blogs seeded successfully!"
+  )
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error(e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await prisma.$disconnect()
+  })

@@ -6,15 +6,15 @@ All docs are English only, markdown in `docs/` (per approved plan). Text-only na
 
 ## Reading Order
 
-| # | File | Purpose | Spec § |
-|---|------|---------|--------|
-| 1 | [01-prd.md](./01-prd.md) | Product requirements, roles, flows, non-goals | §1-3, §19-20 |
-| 2 | [07-roadmap.md](./07-roadmap.md) | Phases 1-10 with exit criteria | §22 |
-| 3 | [03-database.md](./03-database.md) | Entities, ERD (mermaid), tables | §16, §13, §6 |
-| 4 | [02-architecture.md](./02-architecture.md) | Stack, high-level architecture, project structure | §17, §18, §21 |
-| 5 | [05-auth.md](./05-auth.md) | Google OAuth, sessions, RBAC | §7, §20 |
-| 6 | [06-admin.md](./06-admin.md) | Admin dashboard CRUD/moderation | §15 |
-| 7 | [04-features.md](./04-features.md) | Beach/accommodation/booking/reviews/blog/search/maps UX | §4-6, §8-14 |
+| #   | File                                       | Purpose                                                 | Spec §        |
+| --- | ------------------------------------------ | ------------------------------------------------------- | ------------- |
+| 1   | [01-prd.md](./01-prd.md)                   | Product requirements, roles, flows, non-goals           | §1-3, §19-20  |
+| 2   | [07-roadmap.md](./07-roadmap.md)           | Phases 1-10 with exit criteria                          | §22           |
+| 3   | [03-database.md](./03-database.md)         | Entities, ERD (mermaid), tables                         | §16, §13, §6  |
+| 4   | [02-architecture.md](./02-architecture.md) | Stack, high-level architecture, project structure       | §17, §18, §21 |
+| 5   | [05-auth.md](./05-auth.md)                 | Google OAuth, sessions, RBAC                            | §7, §20       |
+| 6   | [06-admin.md](./06-admin.md)               | Admin dashboard CRUD/moderation                         | §15           |
+| 7   | [04-features.md](./04-features.md)         | Beach/accommodation/booking/reviews/blog/search/maps UX | §4-6, §8-14   |
 
 Start with `01-prd.md` and `07-roadmap.md`; `03-database.md` blocks most feature work.
 
@@ -27,16 +27,16 @@ Start with `01-prd.md` and `07-roadmap.md`; `03-database.md` blocks most feature
 
 ## Glossary
 
-| Term | Meaning |
-|------|---------|
-| Beach | Geographic destination with entrance fee, amenities, photos, reviews |
+| Term          | Meaning                                                                 |
+| ------------- | ----------------------------------------------------------------------- |
+| Beach         | Geographic destination with entrance fee, amenities, photos, reviews    |
 | Accommodation | Lodging belonging to one Beach (e.g., Paradise Resort → Paradise Beach) |
-| Room Type | Variant within an Accommodation (Standard/Family/Deluxe, Cottage) |
-| Book Now | Auth-gated external redirect to `Accommodation.facebookUrl` |
-| Favorite | User-saved Beach or Accommodation (auth required) |
-| Review | 1-5 star + comment targeting Beach OR Accommodation (auth required) |
-| Admin | Single `ADMIN` role; server-verified, not UI-only |
-| Blog | Travel guide post with category, publish state |
+| Room Type     | Variant within an Accommodation (Standard/Family/Deluxe, Cottage)       |
+| Book Now      | Auth-gated external redirect to `Accommodation.facebookUrl`             |
+| Favorite      | User-saved Beach or Accommodation (auth required)                       |
+| Review        | 1-5 star + comment targeting Beach OR Accommodation (auth required)     |
+| Admin         | Single `ADMIN` role; server-verified, not UI-only                       |
+| Blog          | Travel guide post with category, publish state                          |
 
 ## Quick Links
 

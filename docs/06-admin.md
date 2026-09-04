@@ -57,9 +57,11 @@ Metrics: total beaches, total accommodations, total users, total reviews, avg ra
 - Admin can full CRUD beaches/accommodations/roomTypes/blogs via UI.
 - Non-admin gets 403 on admin routes (manual + automated test).
 - Photos upload to Cloudinary and persist URLs.
+
 ```
 
 
 ## 6.10 Future (out of scope v1)
 
 No staff roles, no analytics export, no bulk import — add only if needed post-launch.
+```

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export const createReviewSchema = z
   .object({
@@ -10,6 +10,6 @@ export const createReviewSchema = z
   .refine((d) => (d.beachId ? !d.accommodationId : !!d.accommodationId), {
     message: "Review must target Beach OR Accommodation (XOR)",
     path: ["beachId"],
-  });
+  })
 
-export type CreateReviewInput = z.infer<typeof createReviewSchema>;
+export type CreateReviewInput = z.infer<typeof createReviewSchema>
