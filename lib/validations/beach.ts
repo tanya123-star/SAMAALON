@@ -1,8 +1,12 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export const beachSchema = z.object({
   name: z.string().min(1).max(100),
-  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, hyphen"),
+  slug: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, hyphen"),
   location: z.string().min(1).max(100),
   description: z.string().min(1).max(5000),
   entranceFee: z.coerce.number().min(0).optional(),
@@ -10,11 +14,16 @@ export const beachSchema = z.object({
   contactInfo: z.string().max(200).optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),
-  googleMapsUrl: z.string()
-  .url()
-  .optional()
-  .or(z.string().refine((v) => v === "" || v.startsWith("/uploads/"), { message: "Must be a valid URL or /uploads/ path" })),
+  googleMapsUrl: z
+    .string()
+    .url()
+    .optional()
+    .or(
+      z.string().refine((v) => v === "" || v.startsWith("/uploads/"), {
+        message: "Must be a valid URL or /uploads/ path",
+      })
+    ),
   amenities: z.array(z.string()).optional(),
-});
+})
 
-export type BeachInput = z.infer<typeof beachSchema>;
+export type BeachInput = z.infer<typeof beachSchema>

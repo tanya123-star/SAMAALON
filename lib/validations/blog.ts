@@ -1,20 +1,33 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export const blogPostSchema = z.object({
   title: z.string().min(1).max(200),
-  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .min(1)
+    .max(100)
+    .regex(/^[a-z0-9-]+$/),
   content: z.string().min(1),
   categoryId: z.string().cuid().optional().or(z.literal("")),
-  featuredImage: z.string()
-  .url()
-  .optional()
-  .or(z.string().refine((v) => v === "" || v.startsWith("/uploads/"), { message: "Must be a valid URL or /uploads/ path" })),
-});
+  featuredImage: z
+    .string()
+    .url()
+    .optional()
+    .or(
+      z.string().refine((v) => v === "" || v.startsWith("/uploads/"), {
+        message: "Must be a valid URL or /uploads/ path",
+      })
+    ),
+})
 
 export const blogCategorySchema = z.object({
   name: z.string().min(1).max(50),
-  slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/),
-});
+  slug: z
+    .string()
+    .min(1)
+    .max(50)
+    .regex(/^[a-z0-9-]+$/),
+})
 
-export type BlogPostInput = z.infer<typeof blogPostSchema>;
-export type BlogCategoryInput = z.infer<typeof blogCategorySchema>;
+export type BlogPostInput = z.infer<typeof blogPostSchema>
+export type BlogCategoryInput = z.infer<typeof blogCategorySchema>

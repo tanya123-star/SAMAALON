@@ -1,22 +1,34 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
 
 type Props = {
-  src: string;
-  alt: string;
-  className?: string;
-  fallbackSrc?: string;
-};
+  src: string
+  alt: string
+  className?: string
+  fallbackSrc?: string
+}
 
-const FALLBACK = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80";
+const FALLBACK =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80"
 
-export function SafeImage({ src, alt, className, fallbackSrc = FALLBACK }: Props) {
-  const [failed, setFailed] = useState(false);
-  const [imgSrc, setImgSrc] = useState(src);
+export function SafeImage({
+  src,
+  alt,
+  className,
+  fallbackSrc = FALLBACK,
+}: Props) {
+  const [failed, setFailed] = useState(false)
+  const [imgSrc, setImgSrc] = useState(src)
 
   if (failed) {
-    return <div className={`flex items-center justify-center bg-slate-100 text-xs text-muted-foreground ${className ?? ""}`}>Image unavailable</div>;
+    return (
+      <div
+        className={`text-muted-foreground flex items-center justify-center bg-slate-100 text-xs ${className ?? ""}`}
+      >
+        Image unavailable
+      </div>
+    )
   }
 
   return (
@@ -26,11 +38,11 @@ export function SafeImage({ src, alt, className, fallbackSrc = FALLBACK }: Props
       className={className}
       onError={() => {
         if (imgSrc !== fallbackSrc) {
-          setImgSrc(fallbackSrc);
+          setImgSrc(fallbackSrc)
         } else {
-          setFailed(true);
+          setFailed(true)
         }
       }}
     />
-  );
+  )
 }

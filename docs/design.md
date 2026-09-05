@@ -67,6 +67,7 @@ Samaalon incorporates a scroll-driven user journey that feels fluid and responsi
 ```
 
 ### Motion Specs
+
 - **Scroll Triggers:** `IntersectionObserver` / CSS `scroll-timeline` / Framer Motion.
 - **Card Hover:** `transform: translateY(-4px)`, `box-shadow: 0 12px 32px -8px rgba(0,0,0,0.08)`, transition time `300ms cubic-bezier(0.16, 1, 0.3, 1)`.
 - **Page Transitions:** Fade in/out with 200ms duration.
@@ -109,7 +110,7 @@ Realistic sample data based on popular Samal Island destinations for seeding and
    - **Entrance Fee:** ₱100 (Day Tour) / ₱200 (Overnight)
    - **Opening Hours:** 24 Hours
    - **Contact:** +63 928 555 7890
-   - **Description:** A famous back-to-basics island destination on Talikud Island. Iconic soft white sand shaded by sprawling green *Talisay* trees, featuring rich coral reefs for snorkeling right off the shore.
+   - **Description:** A famous back-to-basics island destination on Talikud Island. Iconic soft white sand shaded by sprawling green _Talisay_ trees, featuring rich coral reefs for snorkeling right off the shore.
    - **Amenities:** Talisay Shade Canopy, Snorkeling Reefs, Camping Grounds, Wooden Cottages, Canteen.
 
 5. **SECDEA Beach Resort**
@@ -164,29 +165,33 @@ Realistic sample data based on popular Samal Island destinations for seeding and
 ## 4. Public Page Layout Specifications
 
 ### 4.1 Global Header & Navigation (`/`)
+
 - **Left:** Brand wordmark `SAMAALON` in high-contrast serif typeface.
 - **Center:** Navigation items (`Home`, `Beaches`, `Blog`, `About Samal`).
 - **Right:** Unauthenticated → `[Sign in with Google]`. Authenticated → `[User Avatar Dropdown]` (My Profile, Favorites, My Reviews, Admin Panel if admin, Sign Out).
 - **Sticky Blur:** Smooth transition to `backdrop-blur-md bg-white/80` on scroll.
 
 ### 4.2 Home Page (`/`)
-1. **Parallax Hero Banner:** High-res image with subtitle *"Discover Samal Island's Unspoiled Beaches"*. Embedded quick search pill.
-2. **Scroll Storyteller Banner:** Smooth statistics counters (*30+ Beaches, 50+ Accommodations, 100% Verified Reviews*).
+
+1. **Parallax Hero Banner:** High-res image with subtitle _"Discover Samal Island's Unspoiled Beaches"_. Embedded quick search pill.
+2. **Scroll Storyteller Banner:** Smooth statistics counters (_30+ Beaches, 50+ Accommodations, 100% Verified Reviews_).
 3. **Featured Beaches Section:** Horizontal snap carousel featuring top rated coves with price badge, star rating, and quick heart favorite toggle.
 4. **Resort & Accommodation Highlights:** Grid preview of top places to stay.
 5. **Samal Travel Essentials:** Quick guide cards (Ferry, Environmental Fee, Weather).
 6. **Latest Blog Stories:** 3-column article cards.
 
 ### 4.3 Beaches Listing (`/beaches`)
+
 - **Filter Header Bar:**
   - Search Keyword input box (`q`).
-  - District dropdown filter (*Babak, Peñaplata, Kaputian, Talikud*).
+  - District dropdown filter (_Babak, Peñaplata, Kaputian, Talikud_).
   - Entrance Fee range slider (₱0 - ₱1,000+).
   - Amenities checkboxes (Swimming, Cottages, Restrooms, Parking, Wi-Fi, Water Sports).
   - Minimum Rating toggle (3★+, 4★+).
 - **Beach Cards Grid:** 3 columns on desktop, 2 on tablet, 1 on mobile. Card features photo carousel, entrance fee, rating badge, location, and quick favorite button.
 
 ### 4.4 Beach Details (`/beaches/[slug]`)
+
 - **Mosaic Photo Gallery:** 5-photo grid layout with "View All Photos" lightbox modal.
 - **Quick Info Bar:** Entrance Fee, Opening Hours, Location, Google Maps button (`googleMapsUrl`).
 - **Description & Overview:** Editorial narrative.
@@ -198,21 +203,24 @@ Realistic sample data based on popular Samal Island destinations for seeding and
   - Review cards with star rating, comment, date, user avatar, and moderation status indicator if user's own review.
 
 ### 4.5 Accommodation Details (`/accommodations/[slug]`)
+
 - **Header & Photo Showcase:** Resort photos, associated beach link, price range badge (`₱₱ - ₱₱₱`).
 - **Key Details Card:** Price range, guest capacity, check-in/out times, contact details.
 - **Book Now CTA:**
   - Button: `[Book via Facebook Messenger ↗]`
-  - Subtext: *"You will be redirected to the resort's official Facebook Page to complete your reservation."*
+  - Subtext: _"You will be redirected to the resort's official Facebook Page to complete your reservation."_
   - Action: Verifies auth (prompts login if guest) -> redirects to `accommodation.facebookUrl` in new tab.
 - **Room Types Section:**
   - Card list displaying Room Name, Photos, Price per night, Guest Capacity, Amenities, Description.
 - **Guest Reviews Section.**
 
 ### 4.6 Blog & Article Pages (`/blog` & `/blog/[slug]`)
+
 - **Category Filter Tabs:** Travel Guides | Beaches | Accommodations | Things to Do | How to Get There | Travel Tips | Samal Island.
 - **Article Reader:** Reading progress scroll bar, floating table of contents, high-quality images, clean typography.
 
 ### 4.7 About Samal (`/about`)
+
 - **Geography & Culture:** Rich guide on Samal Island's history, marine protection, and indigenous heritage.
 - **Ferry & Travel Guide:** Interactive step-by-step visual route:
   - Step 1: Davao Sasa Wharf → Babak Ferry (Passenger & Vehicle).
@@ -220,6 +228,7 @@ Realistic sample data based on popular Samal Island destinations for seeding and
   - Step 3: Island Habal-Habal & Tricycle fare breakdown.
 
 ### 4.8 User Profile & Favorites (`/profile`)
+
 - **Profile Header:** Google avatar, name, email, role badge.
 - **Tabs:**
   - **Saved Beaches:** Grid of favorited beaches with one-click remove.
@@ -250,6 +259,7 @@ The Admin Panel uses a dark-sidebar dashboard layout dedicated to platform manag
 ```
 
 ### Admin Workflows
+
 1. **Beach CRUD:** Manage names, slugs, photos, entrance fees, opening hours, contact details, lat/lng, and maps URLs.
 2. **Accommodation & Room CRUD:** Manage resorts, link to parent beach, set `facebookUrl`, edit price ranges, add room types with capacity & prices.
 3. **Review Moderation Queue:** Review pending submissions. Admin can set status to `APPROVED` or `REJECTED`, or delete inappropriate reviews.
@@ -259,13 +269,13 @@ The Admin Panel uses a dark-sidebar dashboard layout dedicated to platform manag
 
 ## 6. UX States Matrix
 
-| State | Visual Design & Behavior |
-|-------|--------------------------|
-| **Loading / Skeleton** | Shimmer animation placeholder blocks (`animate-pulse`) matching card and gallery dimensions. |
-| **Empty Results** | Minimalist beach icon with text *"No beaches found matching your search filters"* + `[Clear Filters]` CTA button. |
-| **Error State** | Minimalist alert banner with error message and a `[Try Again]` reload button. |
-| **404 Not Found** | Editorial error screen: *"Looks like this cove hasn't been discovered yet"* + `[Return to Home]` button. |
-| **Login Required** | Centered modal prompt: *"Please sign in with Google to save favorites, write reviews, or access booking links."* |
-| **Booking Redirect** | Brief full-screen overlay: *"Redirecting to official Facebook Messenger page..."* before opening target link. |
-| **Review Pending** | Banner toast: *"Your review has been submitted and is currently pending moderation."* |
-| **Review Moderation** | Visual status pills (`PENDING` yellow, `APPROVED` green, `REJECTED` red) on profile and admin dashboard. |
+| State                  | Visual Design & Behavior                                                                                          |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Loading / Skeleton** | Shimmer animation placeholder blocks (`animate-pulse`) matching card and gallery dimensions.                      |
+| **Empty Results**      | Minimalist beach icon with text _"No beaches found matching your search filters"_ + `[Clear Filters]` CTA button. |
+| **Error State**        | Minimalist alert banner with error message and a `[Try Again]` reload button.                                     |
+| **404 Not Found**      | Editorial error screen: _"Looks like this cove hasn't been discovered yet"_ + `[Return to Home]` button.          |
+| **Login Required**     | Centered modal prompt: _"Please sign in with Google to save favorites, write reviews, or access booking links."_  |
+| **Booking Redirect**   | Brief full-screen overlay: _"Redirecting to official Facebook Messenger page..."_ before opening target link.     |
+| **Review Pending**     | Banner toast: _"Your review has been submitted and is currently pending moderation."_                             |
+| **Review Moderation**  | Visual status pills (`PENDING` yellow, `APPROVED` green, `REJECTED` red) on profile and admin dashboard.          |

@@ -1,41 +1,41 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog";
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { Menu, X } from "lucide-react"
+import { LogoutConfirmDialog } from "@/components/auth/LogoutConfirmDialog"
 
 type Props = {
-  isAuthed: boolean;
-  userName?: string;
-  role?: string;
-};
+  isAuthed: boolean
+  userName?: string
+  role?: string
+}
 
 const links = [
   { href: "/", label: "HOME" },
   { href: "/beaches", label: "BEACHES" },
   { href: "/blog", label: "BLOG" },
   { href: "/about", label: "ABOUT SAMAL" },
-];
+]
 
 export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") setOpen(false)
     }
     if (open) {
-      document.addEventListener("keydown", onKey);
-      document.body.style.overflow = "hidden";
+      document.addEventListener("keydown", onKey)
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = ""
     }
     return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+      document.removeEventListener("keydown", onKey)
+      document.body.style.overflow = ""
+    }
+  }, [open])
 
   return (
     <div className="md:hidden">
@@ -43,25 +43,29 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:bg-[#1C2A28]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2D6A4F]"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:bg-[#1C2A28]/5 focus-visible:ring-2 focus-visible:ring-[#2D6A4F] focus-visible:outline-none"
       >
-        {open ? <X className="h-5 w-5 text-[#1C2A28]" /> : <Menu className="h-5 w-5 text-[#1C2A28]" />}
+        {open ? (
+          <X className="h-5 w-5 text-[#1C2A28]" />
+        ) : (
+          <Menu className="h-5 w-5 text-[#1C2A28]" />
+        )}
       </button>
       {open ? (
         <>
           <button
             aria-label="Close menu"
             onClick={() => setOpen(false)}
-            className="fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40"
+            className="fixed inset-0 top-16 z-40 bg-black/20 backdrop-blur-sm"
           />
-          <nav className="fixed top-16 left-0 right-0 z-50 max-h-[calc(100vh-4rem)] overflow-y-auto overflow-x-hidden border-t border-[#1C2A28]/10 bg-[#FAF8F5] px-4 py-4 shadow-md">
+          <nav className="fixed top-16 right-0 left-0 z-50 max-h-[calc(100vh-4rem)] overflow-x-hidden overflow-y-auto border-t border-[#1C2A28]/10 bg-[#FAF8F5] px-4 py-4 shadow-md">
             <div className="flex flex-col gap-1">
               {links.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-3 py-3 text-sm font-semibold uppercase tracking-widest text-[#5A6B68] hover:bg-[#1C2A28]/5 hover:text-[#1C2A28]"
+                  className="rounded-md px-3 py-3 text-sm font-semibold tracking-widest text-[#5A6B68] uppercase hover:bg-[#1C2A28]/5 hover:text-[#1C2A28]"
                 >
                   {l.label}
                 </Link>
@@ -71,7 +75,7 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
                   <Link
                     href="/profile"
                     onClick={() => setOpen(false)}
-                    className="rounded-md px-3 py-3 text-sm font-semibold uppercase tracking-widest text-[#1C2A28] hover:bg-[#1C2A28]/5"
+                    className="rounded-md px-3 py-3 text-sm font-semibold tracking-widest text-[#1C2A28] uppercase hover:bg-[#1C2A28]/5"
                   >
                     PROFILE {userName ? `(${userName})` : ""}
                   </Link>
@@ -79,7 +83,7 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
                     <Link
                       href="/admin"
                       onClick={() => setOpen(false)}
-                      className="mx-3 mt-1 inline-flex w-fit rounded-full bg-[#1C2A28] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white"
+                      className="mx-3 mt-1 inline-flex w-fit rounded-full bg-[#1C2A28] px-4 py-2 text-xs font-bold tracking-wider text-white uppercase"
                     >
                       ADMIN
                     </Link>
@@ -95,7 +99,7 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="mt-2 inline-flex w-full justify-center rounded-full bg-[#1C2A28] px-5 py-3 text-xs font-semibold uppercase tracking-widest text-white hover:bg-[#2D6A4F]"
+                  className="mt-2 inline-flex w-full justify-center rounded-full bg-[#1C2A28] px-5 py-3 text-xs font-semibold tracking-widest text-white uppercase hover:bg-[#2D6A4F]"
                 >
                   LOGIN
                 </Link>
@@ -105,5 +109,5 @@ export function HeaderMobileMenu({ isAuthed, userName, role }: Props) {
         </>
       ) : null}
     </div>
-  );
+  )
 }

@@ -4,19 +4,19 @@
 
 ## 2.1 Stack (§17)
 
-| Layer | Choice | Notes |
-|-------|--------|-------|
-| Frontend/Backend | Next.js App Router + TypeScript | Route Handlers, Server Actions, Server/Client Components — no separate Express |
-| Styling | Tailwind CSS + shadcn/ui | Minimalist design, responsive |
-| Database | PostgreSQL (Neon) | |
-| ORM | Prisma | Parameterized queries |
-| Auth | Auth.js + Google OAuth | No passwords |
-| Validation | Zod | Server + client |
-| Forms | React Hook Form | |
-| Images | Cloudinary | Beach/accommodation/blog photos |
-| Maps | Google Maps Platform | lat/lng + maps URL |
-| Dev | Docker, Git + GitHub | |
-| Deploy | Vercel (app) + Neon (DB) + Cloudinary | Facebook for booking |
+| Layer            | Choice                                | Notes                                                                          |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------ |
+| Frontend/Backend | Next.js App Router + TypeScript       | Route Handlers, Server Actions, Server/Client Components — no separate Express |
+| Styling          | Tailwind CSS + shadcn/ui              | Minimalist design, responsive                                                  |
+| Database         | PostgreSQL (Neon)                     |                                                                                |
+| ORM              | Prisma                                | Parameterized queries                                                          |
+| Auth             | Auth.js + Google OAuth                | No passwords                                                                   |
+| Validation       | Zod                                   | Server + client                                                                |
+| Forms            | React Hook Form                       |                                                                                |
+| Images           | Cloudinary                            | Beach/accommodation/blog photos                                                |
+| Maps             | Google Maps Platform                  | lat/lng + maps URL                                                             |
+| Dev              | Docker, Git + GitHub                  |                                                                                |
+| Deploy           | Vercel (app) + Neon (DB) + Cloudinary | Facebook for booking                                                           |
 
 ## 2.2 High-Level Architecture (§18)
 
