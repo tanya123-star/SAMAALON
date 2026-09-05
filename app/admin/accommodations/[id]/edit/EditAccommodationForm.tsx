@@ -72,6 +72,17 @@ export function EditAccommodationForm({
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
+    .filter((rawUrl) => {
+      try {
+        const parsed = new URL(rawUrl)
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          return false
+        }
+        return validateRemoteImageUrl(parsed.toString()).ok
+      } catch {
+        return false
+      }
+    })
 
   return (
     <form
