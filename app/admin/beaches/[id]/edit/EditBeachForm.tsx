@@ -36,21 +36,26 @@ function RemotePreview({ url }: { url: string }) {
     )
   }
 
-  let safeUrl: string
+  let safeUrl: string | null = null
+  let urlError: string | null = null
   try {
     const parsed = new URL(url)
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-      return <p className="text-xs text-red-600">Invalid URL protocol — {url}</p>
+      urlError = `Invalid URL protocol — ${url}`
+    } else {
+      safeUrl = parsed.toString()
     }
-    safeUrl = parsed.toString()
   } catch {
-    return <p className="text-xs text-red-600">Invalid URL format — {url}</p>
+    urlError = `Invalid URL format — ${url}`
+  }
+  if (urlError) {
+    return <p className="text-xs text-red-600">{urlError}</p>
   }
 
   return (
     <div className="flex items-center gap-2 rounded border p-2">
       <img
-        src={safeUrl}
+        src={safeUrl!}
         alt="Preview"
         className="h-12 w-16 rounded object-cover"
         onLoad={() => setStatus("ok")}
