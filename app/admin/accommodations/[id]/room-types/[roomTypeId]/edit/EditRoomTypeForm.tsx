@@ -30,13 +30,13 @@ function ImagePreview({ url }: { url: string }) {
   return (
     <div className="flex items-center gap-2 rounded border p-2">
       <img
-        src={url}
+        src={validation.url}
         alt="Preview"
         className="h-12 w-16 rounded object-cover"
         onLoad={() => setStatus("ok")}
         onError={() => setStatus("error")}
       />
-      <span className="flex-1 truncate text-xs">{url}</span>
+      <span className="flex-1 truncate text-xs">{validation.url}</span>
       {status === "loading" && (
         <span className="text-muted-foreground text-xs">Loading image...</span>
       )}
