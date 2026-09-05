@@ -1,0 +1,23 @@
+﻿language: en
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  related_issues: true
+
+path_instructions:
+  - pattern: prisma/migrations/**
+    instructions: >
+      Ignore migration churn unless there is a clear dangerous or breaking
+      schema change. Flag but do not block.
+
+  - pattern: ".next/**"
+    instructions: Ignore generated build output; do not review.
+
+  - pattern: node_modules/**
+    instructions: Ignore third-party dependencies; do not review.
+
+  - pattern: ".github/**"
+    instructions: >
+      Ignore workflow and Dependabot configuration files; only review if
+      syntax errors are obvious.

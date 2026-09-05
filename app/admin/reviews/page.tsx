@@ -1,0 +1,309 @@
+import { prisma } from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
+import { auth } from "@/lib/auth"
+import { searchParamsSchema } from "@/lib/validations/search"
+import { Button } from "@/components/ui/button"
+import { AdminSearchAutocomplete } from "@/components/admin/AdminSearchAutocomplete"
+
+async function updateReviewStatus(formData: FormData) {
+  "use server"
+  const session = await auth()
+  const moderatedBy = (session?.user as unknown as { id?: string })?.id
+  const id = String(formData.get("id") ?? "")
+  const status = String(formData.get("status") ?? "")
+  if (!id || !status) return
+
+  const review = await prisma.review.findUnique({ where: { id } })
+  if (!review) return
+
+  await prisma.$transaction(async (tx) => {
+    await tx.review.update({
+      where: { id },
+      data: {
+        status: status as "PENDING" | "APPROVED" | "REJECTED",
+        moderatedBy: moderatedBy ?? (null as never),
+      },
+    })
+
+    // Recalculate average ratings for approved reviews only
+    if (review.beachId) {
+      const agg = await tx.review.aggregate({
+        where: { beachId: review.beachId, status: "APPROVED" },
+        _avg: { rating: true },
+        _count: { rating: true },
+      })
+      await tx.beach.update({
+        where: { id: review.beachId },
+        data: {
+          avgRating: agg._avg.rating ?? (null as never),
+          reviewCount: agg._count.rating,
+        },
+      })
+    }
+    if (review.accommodationId) {
+      const agg = await tx.review.aggregate({
+        where: { accommodationId: review.accommodationId, status: "APPROVED" },
+        _avg: { rating: true },
+        _count: { rating: true },
+      })
+      await tx.accommodation.update({
+        where: { id: review.accommodationId },
+        data: {
+          avgRating: agg._avg.rating ?? (null as never),
+          reviewCount: agg._count.rating,
+        },
+      })
+    }
+  })
+
+  revalidatePath("/admin/reviews")
+  if (review.beachId) revalidatePath(`/beaches/${review.beachId}`)
+  if (review.accommodationId)
+    revalidatePath(`/accommodations/${review.accommodationId}`)
+  revalidatePath("/beaches")
+  revalidatePath("/")
+}
+
+async function deleteReview(formData: FormData) {
+  "use server"
+  const id = String(formData.get("id") ?? "")
+  if (!id) return
+  const review = await prisma.review.findUnique({ where: { id } })
+  if (!review) return
+  await prisma.$transaction(async (tx) => {
+    await tx.review.delete({ where: { id } })
+    if (review.beachId) {
+      const agg = await tx.review.aggregate({
+        where: { beachId: review.beachId, status: "APPROVED" },
+        _avg: { rating: true },
+        _count: { rating: true },
+      })
+      await tx.beach.update({
+        where: { id: review.beachId },
+        data: {
+          avgRating: agg._avg.rating ?? (null as never),
+          reviewCount: agg._count.rating,
+        },
+      })
+    }
+    if (review.accommodationId) {
+      const agg = await tx.review.aggregate({
+        where: { accommodationId: review.accommodationId, status: "APPROVED" },
+        _avg: { rating: true },
+        _count: { rating: true },
+      })
+      await tx.accommodation.update({
+        where: { id: review.accommodationId },
+        data: {
+          avgRating: agg._avg.rating ?? (null as never),
+          reviewCount: agg._count.rating,
+        },
+      })
+    }
+  })
+  revalidatePath("/admin/reviews")
+  if (review.beachId) revalidatePath(`/beaches/${review.beachId}`)
+  if (review.accommodationId)
+    revalidatePath(`/accommodations/${review.accommodationId}`)
+  revalidatePath("/beaches")
+  revalidatePath("/")
+}
+
+export default async function AdminReviewsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; q?: string }>
+}) {
+  const { status, q: rawQ } = await searchParams
+  const parsed = searchParamsSchema.safeParse({ q: rawQ })
+  const q = parsed.success ? parsed.data.q : undefined
+  const statusWhere =
+    status && ["PENDING", "APPROVED", "REJECTED"].includes(status)
+      ? { status: status as "PENDING" | "APPROVED" | "REJECTED" }
+      : {}
+  const where = q
+    ? {
+        AND: [
+          statusWhere,
+          {
+            OR: [
+              { comment: { contains: q, mode: "insensitive" as const } },
+              { user: { name: { contains: q, mode: "insensitive" as const } } },
+              {
+                user: { email: { contains: q, mode: "insensitive" as const } },
+              },
+              {
+                beach: { name: { contains: q, mode: "insensitive" as const } },
+              },
+              {
+                accommodation: {
+                  name: { contains: q, mode: "insensitive" as const },
+                },
+              },
+            ],
+          },
+        ],
+      }
+    : statusWhere
+  const reviews = await prisma.review.findMany({
+    where: where as never,
+    include: { user: true, beach: true, accommodation: true },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  })
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-serif text-2xl font-bold text-[#1C2A28]">
+          Review Moderation Queue
+        </h1>
+        <p className="text-xs text-[#5A6B68]">
+          Approve pending reviews to publish them on the public site or
+          reject/delete spam.
+        </p>
+        <div className="mt-3 flex gap-2 text-xs">
+          <a
+            href="/admin/reviews"
+            className={`rounded-full border px-3 py-1 ${!status ? "bg-[#1C2A28] text-white" : "hover:bg-muted"}`}
+          >
+            All
+          </a>
+          <a
+            href="/admin/reviews?status=PENDING"
+            className={`rounded-full border px-3 py-1 ${status === "PENDING" ? "bg-amber-500 text-white" : "hover:bg-muted"}`}
+          >
+            Pending
+          </a>
+          <a
+            href="/admin/reviews?status=APPROVED"
+            className={`rounded-full border px-3 py-1 ${status === "APPROVED" ? "bg-emerald-600 text-white" : "hover:bg-muted"}`}
+          >
+            Approved
+          </a>
+          <a
+            href="/admin/reviews?status=REJECTED"
+            className={`rounded-full border px-3 py-1 ${status === "REJECTED" ? "bg-rose-600 text-white" : "hover:bg-muted"}`}
+          >
+            Rejected
+          </a>
+        </div>
+        <form method="GET" className="mt-3 flex gap-2">
+          {status ? <input type="hidden" name="status" value={status} /> : null}
+          <AdminSearchAutocomplete
+            name="q"
+            defaultValue={q ?? ""}
+            placeholder="Search reviewer name/email, comment, beach/accommodation..."
+            entity="reviews"
+          />
+          <Button type="submit" variant="outline" size="sm">
+            Search
+          </Button>
+          <a
+            href={status ? `/admin/reviews?status=${status}` : "/admin/reviews"}
+            className="hover:bg-muted inline-flex h-7 items-center justify-center rounded-md border px-2.5 text-xs"
+          >
+            Clear
+          </a>
+        </form>
+        {q ? (
+          <p className="text-muted-foreground mt-2 text-xs">
+            Showing {reviews.length} result{reviews.length === 1 ? "" : "s"} for
+            &ldquo;{q}&rdquo;{status ? ` in ${status}` : ""}
+          </p>
+        ) : null}
+      </div>
+
+      <div className="space-y-4">
+        {reviews.length === 0 ? (
+          <p className="rounded-xl border border-dashed bg-white p-8 text-center text-xs text-[#5A6B68]">
+            No reviews in queue.
+          </p>
+        ) : null}
+
+        {reviews.map((r) => {
+          const targetName =
+            r.beach?.name || r.accommodation?.name || "Unspecified"
+          return (
+            <div
+              key={r.id}
+              className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-[#1C2A28]/10 bg-white p-6 shadow-sm sm:flex-row sm:items-center"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-amber-500">
+                    ⭐ {r.rating} / 5
+                  </span>
+                  <span className="text-xs font-bold text-[#1C2A28]">
+                    {r.user.name || r.user.email}
+                  </span>
+                  <span className="text-xs text-[#5A6B68]">
+                    for <strong className="text-[#2D6A4F]">{targetName}</strong>
+                  </span>
+                </div>
+                <p className="text-xs leading-relaxed text-[#5A6B68]">
+                  {r.comment}
+                </p>
+                <div className="flex items-center gap-2 pt-1">
+                  {r.status === "PENDING" && (
+                    <span className="rounded-full border border-amber-300 bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-800">
+                      🟡 Pending Moderation
+                    </span>
+                  )}
+                  {r.status === "APPROVED" && (
+                    <span className="rounded-full border border-emerald-300 bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">
+                      🟢 Approved & Live
+                    </span>
+                  )}
+                  {r.status === "REJECTED" && (
+                    <span className="rounded-full border border-rose-300 bg-rose-100 px-2.5 py-0.5 text-[10px] font-bold text-rose-800">
+                      🔴 Rejected
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {r.status !== "APPROVED" && (
+                  <form action={updateReviewStatus}>
+                    <input type="hidden" name="id" value={r.id} />
+                    <input type="hidden" name="status" value="APPROVED" />
+                    <button
+                      type="submit"
+                      className="rounded-full bg-[#2D6A4F] px-4 py-1.5 text-xs font-bold text-white transition-all hover:bg-[#1C2A28]"
+                    >
+                      Approve
+                    </button>
+                  </form>
+                )}
+
+                {r.status !== "REJECTED" && (
+                  <form action={updateReviewStatus}>
+                    <input type="hidden" name="id" value={r.id} />
+                    <input type="hidden" name="status" value="REJECTED" />
+                    <button
+                      type="submit"
+                      className="rounded-full bg-amber-600 px-4 py-1.5 text-xs font-bold text-white transition-all hover:bg-amber-700"
+                    >
+                      Reject
+                    </button>
+                  </form>
+                )}
+
+                <form action={deleteReview}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button
+                    type="submit"
+                    className="rounded-full bg-rose-600 px-4 py-1.5 text-xs font-bold text-white transition-all hover:bg-rose-700"
+                  >
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

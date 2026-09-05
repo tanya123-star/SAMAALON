@@ -1,30 +1,45 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next"
+import {
+  Playfair_Display,
+  Plus_Jakarta_Sans,
+  Geist_Mono,
+} from "next/font/google"
+import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fontSans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
-});
+})
 
-const geistMono = Geist_Mono({
+const fontSerif = Playfair_Display({
+  variable: "--font-serif",
+  subsets: ["latin"],
+})
+
+const fontMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
+})
 
 export const metadata: Metadata = {
-  title: "SAMAALON — Samal Island Discovery",
+  title: "SAMAALON — Minimalist Samal Island Beach & Travel Discovery",
   description:
-    "Discover Samal Island beaches, accommodations, room types, maps, and travel guides. Browse freely, save favorites with Google.",
-};
+    "Discover Samal Island beaches, accommodations, room types, maps, and travel guides. Explore pristine tropical coves freely.",
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col bg-[#FAF8F5] font-sans text-[#1C2A28]">
+        {children}
+      </body>
     </html>
-  );
+  )
 }

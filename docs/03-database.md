@@ -93,108 +93,117 @@ Rules: `Review` targets **Beach XOR Accommodation** (check constraint, enforced 
 ## 3.2 Tables
 
 ### User
-| Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
-| id | uuid/text | PK, cuid | Auth.js |
-| email | varchar | UK, not null | Google |
-| name | varchar | | |
-| image | varchar | | Google avatar |
-| role | enum `USER, ADMIN` | default USER | One admin |
-| createdAt | timestamp | | |
+
+| Column    | Type               | Constraints  | Notes         |
+| --------- | ------------------ | ------------ | ------------- |
+| id        | uuid/text          | PK, cuid     | Auth.js       |
+| email     | varchar            | UK, not null | Google        |
+| name      | varchar            |              |               |
+| image     | varchar            |              | Google avatar |
+| role      | enum `USER, ADMIN` | default USER | One admin     |
+| createdAt | timestamp          |              |               |
 
 ### Beach
-| Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
-| id | uuid | PK | |
-| name | varchar | UK | §4 |
-| slug | varchar | UK, indexed | |
-| location | varchar | indexed | Filter §12 |
-| description | text | | |
-| entranceFee | decimal | | Filter §12 |
-| openingHours | varchar | | |
-| contactInfo | varchar | | |
-| latitude | decimal(10,7) | | §13 |
-| longitude | decimal(10,7) | | §13 |
-| googleMapsUrl | varchar | | §13 |
-| avgRating | decimal(2,1) | generated/materialized | From Reviews |
-| reviewCount | int | | |
+
+| Column        | Type          | Constraints            | Notes        |
+| ------------- | ------------- | ---------------------- | ------------ |
+| id            | uuid          | PK                     |              |
+| name          | varchar       | UK                     | §4           |
+| slug          | varchar       | UK, indexed            |              |
+| location      | varchar       | indexed                | Filter §12   |
+| description   | text          |                        |              |
+| entranceFee   | decimal       |                        | Filter §12   |
+| openingHours  | varchar       |                        |              |
+| contactInfo   | varchar       |                        |              |
+| latitude      | decimal(10,7) |                        | §13          |
+| longitude     | decimal(10,7) |                        | §13          |
+| googleMapsUrl | varchar       |                        | §13          |
+| avgRating     | decimal(2,1)  | generated/materialized | From Reviews |
+| reviewCount   | int           |                        |              |
 
 ### BeachImage
-| Column | Type | Notes |
-|--------|------|-------|
-| id | PK | |
-| beachId | FK → Beach, cascade | |
-| url | varchar (Cloudinary) | |
-| alt | varchar | |
-| sortOrder | int | |
+
+| Column    | Type                 | Notes |
+| --------- | -------------------- | ----- |
+| id        | PK                   |       |
+| beachId   | FK → Beach, cascade  |       |
+| url       | varchar (Cloudinary) |       |
+| alt       | varchar              |       |
+| sortOrder | int                  |       |
 
 ### BeachAmenity (or M2M `Amenity` table)
+
 Option A (simple): `Beach.amenities` as string array / JSON. Option B (normalized): `Amenity` + `BeachAmenity` join. Recommend **B** for filtering (§12).
 
-| Column | Type |
-|--------|------|
-| id | PK |
-| name | UK (Swimming, Cottages, ...) |
-| icon | varchar |
+| Column | Type                         |
+| ------ | ---------------------------- |
+| id     | PK                           |
+| name   | UK (Swimming, Cottages, ...) |
+| icon   | varchar                      |
 
 ### Accommodation
-| Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
-| id | uuid | PK | §5 |
-| beachId | uuid | FK → Beach | |
-| name | varchar | | |
-| slug | varchar | UK | |
-| description | text | | |
-| priceRange | varchar | | Filter §12 |
-| facebookUrl | varchar | not null | §6 booking |
-| contactInfo | varchar | | |
-| checkInTime | varchar | | |
-| checkOutTime | varchar | | |
-| maxGuests | int | | Filter |
-| avgRating | decimal | | |
-| reviewCount | int | | |
+
+| Column       | Type    | Constraints | Notes      |
+| ------------ | ------- | ----------- | ---------- |
+| id           | uuid    | PK          | §5         |
+| beachId      | uuid    | FK → Beach  |            |
+| name         | varchar |             |            |
+| slug         | varchar | UK          |            |
+| description  | text    |             |            |
+| priceRange   | varchar |             | Filter §12 |
+| facebookUrl  | varchar | not null    | §6 booking |
+| contactInfo  | varchar |             |            |
+| checkInTime  | varchar |             |            |
+| checkOutTime | varchar |             |            |
+| maxGuests    | int     |             | Filter     |
+| avgRating    | decimal |             |            |
+| reviewCount  | int     |             |            |
 
 ### AccommodationImage / AccommodationAmenity — same pattern as Beach.
 
 ### RoomType
-| Column | Type | Notes |
-|--------|------|-------|
-| id | PK | §5 |
-| accommodationId | FK → Accommodation | |
-| name | varchar (Standard/Family/Deluxe/Cottage) | |
-| description | text | |
-| price | decimal | |
-| maxGuests | int | |
-| amenities | text/JSON | |
-| photos | via RoomTypeImage | |
+
+| Column          | Type                                     | Notes |
+| --------------- | ---------------------------------------- | ----- |
+| id              | PK                                       | §5    |
+| accommodationId | FK → Accommodation                       |       |
+| name            | varchar (Standard/Family/Deluxe/Cottage) |       |
+| description     | text                                     |       |
+| price           | decimal                                  |       |
+| maxGuests       | int                                      |       |
+| amenities       | text/JSON                                |       |
+| photos          | via RoomTypeImage                        |       |
 
 ### Review
-| Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
-| id | uuid | PK | §8 |
-| userId | uuid | FK → User | |
-| beachId | uuid nullable | FK → Beach | XOR with accommodationId |
-| accommodationId | uuid nullable | FK → Accommodation | |
-| rating | int 1-5 | check | |
-| comment | text | | |
-| createdAt | timestamp | | |
-| updatedAt | timestamp | | |
+
+| Column          | Type          | Constraints        | Notes                    |
+| --------------- | ------------- | ------------------ | ------------------------ |
+| id              | uuid          | PK                 | §8                       |
+| userId          | uuid          | FK → User          |                          |
+| beachId         | uuid nullable | FK → Beach         | XOR with accommodationId |
+| accommodationId | uuid nullable | FK → Accommodation |                          |
+| rating          | int 1-5       | check              |                          |
+| comment         | text          |                    |                          |
+| createdAt       | timestamp     |                    |                          |
+| updatedAt       | timestamp     |                    |                          |
 
 Indexes: `(beachId, createdAt)`, `(accommodationId, createdAt)`, `(userId)`.
 
 ### FavoriteBeach / FavoriteAccommodation
-| Column | Type | Notes |
-|--------|------|-------|
-| userId | FK → User | PK part |
-| beachId / accommodationId | FK | PK part |
-| createdAt | timestamp | |
+
+| Column                    | Type      | Notes   |
+| ------------------------- | --------- | ------- |
+| userId                    | FK → User | PK part |
+| beachId / accommodationId | FK        | PK part |
+| createdAt                 | timestamp |         |
 
 ### BlogCategory / BlogPost / BlogImage
-| Column | Type | Notes |
-|--------|------|-------|
-| BlogCategory.id/name/slug | | §11 |
+
+| Column                                                                              | Type    | Notes    |
+| ----------------------------------------------------------------------------------- | ------- | -------- |
+| BlogCategory.id/name/slug                                                           |         | §11      |
 | BlogPost.title/slug/content/featuredImage/categoryId/authorId/published/publishedAt | slug UK | CRUD §11 |
-| BlogImage.blogPostId/url | FK | |
+| BlogImage.blogPostId/url                                                            | FK      |          |
 
 ## 3.3 Relationships Summary (§16)
 
