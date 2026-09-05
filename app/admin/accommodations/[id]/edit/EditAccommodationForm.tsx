@@ -30,17 +30,28 @@ type Props = {
 function RemotePreview({ url }: { url: string }) {
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading")
   const validation = validateRemoteImageUrl(url)
-  if (!validation.ok) {
+
+  let safeUrl: string | null = null
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      safeUrl = parsed.toString()
+    }
+  } catch {
+    safeUrl = null
+  }
+
+  if (!validation.ok || !safeUrl) {
     return (
       <p className="text-xs text-red-600">
-        {validation.error} — {url}
+        {validation.ok ? "Invalid remote image URL" : validation.error} — {url}
       </p>
     )
   }
   return (
     <div className="flex items-center gap-2 rounded border p-2">
       <img
-        src={url}
+        src={safeUrl}
         alt="Preview"
         className="h-12 w-16 rounded object-cover"
         onLoad={() => setStatus("ok")}
