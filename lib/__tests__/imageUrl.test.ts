@@ -39,7 +39,7 @@ describe("validateRemoteImageUrl", () => {
   it("rejects unsplash page URL", () => {
     const res = validateRemoteImageUrl("https://unsplash.com/photos/abc123")
     expect(res.ok).toBe(false)
-    if (!res.ok) expect(res.error).toMatch(/images\.unsplash\.com/)
+    if (!res.ok) expect(res.error).toMatch(/^.*images\.unsplash\.com.*$/)
   })
 
   it("rejects subdomain unsplash page URL", () => {
