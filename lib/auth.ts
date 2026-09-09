@@ -1,21 +1,13 @@
 import NextAuth from "next-auth"
-import Google from "next-auth/providers/google"
+import authConfig from "@/lib/auth.config"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  pages: {
-    signIn: "/login",
-  },
-  providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID!,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
-    }),
-  ],
-  session: { strategy: "jwt" },
+  ...authConfig,
   callbacks: {
+    ...authConfig.callbacks,
     async signIn({ user }) {
-      // auto-create User on first sign-in, promote to ADMIN if email matches ADMIN_EMAIL
-      // dynamic import to keep middleware (edge) from loading prisma/node:util/types
+      // Server-only: middleware uses lib/auth.config.ts so this Prisma
+      // dependency is never pulled into the Edge Middleware graph.
       const { prisma } = await import("@/lib/prisma")
       if (user.email) {
         const existing = await prisma.user.findUnique({
