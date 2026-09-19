@@ -634,17 +634,34 @@ async function main() {
       },
     })
 
-    // Link beach images
+    // Link beach images (idempotent: reconcile by natural key beachId + url).
+    // No unique constraint exists on BeachImage, so match in memory.
+    // Never delete extras — admins may have added images outside the seed.
+    const existingImages = await prisma.beachImage.findMany({
+      where: { beachId: beach.id },
+    })
+    const existingImagesByUrl = new Map(
+      existingImages.map((img) => [img.url, img])
+    )
     for (let i = 0; i < b.images.length; i++) {
       const img = b.images[i]
-      await prisma.beachImage.create({
-        data: {
-          beachId: beach.id,
-          url: img.url,
-          alt: img.alt,
-          sortOrder: i,
-        },
-      })
+      const existing = existingImagesByUrl.get(img.url)
+      if (!existing) {
+        const created = await prisma.beachImage.create({
+          data: {
+            beachId: beach.id,
+            url: img.url,
+            alt: img.alt,
+            sortOrder: i,
+          },
+        })
+        existingImagesByUrl.set(img.url, created)
+      } else if (existing.alt !== img.alt || existing.sortOrder !== i) {
+        await prisma.beachImage.update({
+          where: { id: existing.id },
+          data: { alt: img.alt, sortOrder: i },
+        })
+      }
     }
 
     // Link beach amenities
@@ -691,18 +708,40 @@ async function main() {
         },
       })
 
-      // Link room types
+      // Link room types (idempotent: reconcile by natural key accommodationId + name).
+      // No unique constraint exists on RoomType, so match in memory.
+      // Never delete extras — admins may have added room types outside the seed.
+      const existingRoomTypes = await prisma.roomType.findMany({
+        where: { accommodationId: createdAcc.id },
+      })
+      const existingRoomTypesByName = new Map(
+        existingRoomTypes.map((rt) => [rt.name, rt])
+      )
       for (const rt of acc.roomTypes) {
-        await prisma.roomType.create({
-          data: {
-            accommodationId: createdAcc.id,
-            name: rt.name,
-            description: rt.description,
-            price: rt.price,
-            maxGuests: rt.maxGuests,
-            amenities: rt.amenities,
-          },
-        })
+        const existing = existingRoomTypesByName.get(rt.name)
+        if (!existing) {
+          const created = await prisma.roomType.create({
+            data: {
+              accommodationId: createdAcc.id,
+              name: rt.name,
+              description: rt.description,
+              price: rt.price,
+              maxGuests: rt.maxGuests,
+              amenities: rt.amenities,
+            },
+          })
+          existingRoomTypesByName.set(rt.name, created)
+        } else {
+          await prisma.roomType.update({
+            where: { id: existing.id },
+            data: {
+              description: rt.description,
+              price: rt.price,
+              maxGuests: rt.maxGuests,
+              amenities: rt.amenities,
+            },
+          })
+        }
       }
 
       // Link accommodation amenities
@@ -783,7 +822,8 @@ async function main() {
         featuredImage: topic.featuredImage,
         categoryId: catId,
         published: true,
-        publishedAt: new Date(),
+        // publishedAt intentionally untouched on update: preserve the
+        // original publish timestamp across repeated seed runs.
       },
       create: {
         title: topic.title,
